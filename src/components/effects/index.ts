@@ -1,0 +1,1 @@
+export { default as EffectsSection } from './EffectsSection';
