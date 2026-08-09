@@ -144,16 +144,12 @@ export const useSequencerStore = create<SequencerStore>()(
           const maxSteps = Math.max(...Object.values(state.patternLength));
           set({ currentStep: (state.currentStep - 1 + maxSteps) % maxSteps });
         },
-        createPattern: (section, length = 16) => {
-          const pattern = createEmptyPattern(length, section);
-          return pattern;
-        },
+        createPattern: (section, length = 16) => createEmptyPattern(length, section),
         copyPattern: (section, fromBank, fromIndex, toBank, toIndex) => set((state) => {
           const patterns = [...state.patterns[section]];
           const fromPatternIndex = fromBank * 8 + fromIndex;
           const toPatternIndex = toBank * 8 + toIndex;
-          const patternToCopy = { ...patterns[fromPatternIndex], bank: toBank, index: toIndex };
-          patterns[toPatternIndex] = patternToCopy;
+          patterns[toPatternIndex] = { ...patterns[fromPatternIndex], bank: toBank, index: toIndex };
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         deletePattern: (section, bank, index) => set((state) => {
@@ -177,8 +173,7 @@ export const useSequencerStore = create<SequencerStore>()(
         }),
         setPatternLength: (section, length) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           const clampedLength = Math.max(1, Math.min(32, length));
           const newSteps: Step[] = [];
           for (let i = 0; i < clampedLength; i++) {
@@ -190,7 +185,7 @@ export const useSequencerStore = create<SequencerStore>()(
                 : { instrument: null, accent: false, flam: false });
             }
           }
-          patterns[patternIndex] = { ...currentPattern, length: clampedLength, steps: newSteps };
+          patterns[0] = { ...currentPattern, length: clampedLength, steps: newSteps };
           return {
             patterns: { ...state.patterns, [section]: patterns },
             patternLength: { ...state.patternLength, [section]: clampedLength },
@@ -198,19 +193,17 @@ export const useSequencerStore = create<SequencerStore>()(
         }),
         setStep: (section, step, stepData) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             updatedSteps[step] = { ...updatedSteps[step], ...stepData };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         toggleStep: (section, step) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
@@ -218,102 +211,94 @@ export const useSequencerStore = create<SequencerStore>()(
             updatedSteps[step] = currentStep.instrument !== null
               ? { ...currentStep, instrument: null, accent: false, flam: false }
               : { ...currentStep, instrument: defaultInstrument, accent: false, flam: false };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         setStepInstrument: (section, step, instrument) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             (updatedSteps[step] as any).instrument = instrument;
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         toggleStepAccent: (section, step) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
             updatedSteps[step] = { ...currentStep, accent: !currentStep.accent };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         toggleStepFlam: (section, step) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
             updatedSteps[step] = { ...currentStep, flam: !currentStep.flam };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         setStepNote: (section, step, note) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
             updatedSteps[step] = { ...currentStep, note, notePause: note ? 'note' : 'pause', down: true, up: false };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         setStepNotePause: (section, step, notePause) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
             updatedSteps[step] = { ...currentStep, notePause, note: null, down: false, up: false };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         toggleStepDown: (section, step) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
             updatedSteps[step] = { ...currentStep, down: !currentStep.down };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         toggleStepUp: (section, step) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
             updatedSteps[step] = { ...currentStep, up: !currentStep.up };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
         toggleStepSlide: (section, step) => set((state) => {
           const patterns = [...state.patterns[section]];
-          const patternIndex = 0;
-          const currentPattern = patterns[patternIndex];
+          const currentPattern = patterns[0];
           if (step >= 0 && step < currentPattern.length) {
             const updatedSteps = [...currentPattern.steps];
             const currentStep = updatedSteps[step] as any;
             updatedSteps[step] = { ...currentStep, slide: !currentStep.slide };
-            patterns[patternIndex] = { ...currentPattern, steps: updatedSteps };
+            patterns[0] = { ...currentPattern, steps: updatedSteps };
           }
           return { patterns: { ...state.patterns, [section]: patterns } };
         }),
