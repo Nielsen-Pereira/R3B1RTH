@@ -1,147 +1,85 @@
 import { create } from 'zustand';
-import { SectionType, Pattern, PatternStep, SequencerState } from '../types/audio';
+import { SequencerStoreState, TB303Pattern, DrumPattern, TB303Settings, DrumSettings, GlobalSettings } from '../types/audio';
 
-const DEFAULT_LENGTH = 16;
-const createEmptyPattern = (len: number): Pattern => ({ steps: Array.from({ length: len }, () => ({})), name: 'Untitled' });
+const createDefaultTB303Pattern = (): TB303Pattern => ({ id: `tb303-${Date.now()}`, name: 'Pattern 1', type: 'TB303', steps: Array(16).fill(null).map(() => ({ active: false })), length: 16 });
+const createDefaultDrumPattern = (instrument: string): DrumPattern => ({ id: `${instrument}-${Date.now()}`, name: 'Pattern 1', type: 'drum', instrument: instrument as any, steps: Array(16).fill(null).map(() => ({ active: false })), length: 16 });
 
-const createDefaultPatterns = (): Record<SectionType, Pattern[]> => ({
-  '303_1': Array.from({ length: 32 }, () => createEmptyPattern(DEFAULT_LENGTH)),
-  '303_2': Array.from({ length: 32 }, () => createEmptyPattern(DEFAULT_LENGTH)),
-  '808': Array.from({ length: 32 }, () => createEmptyPattern(DEFAULT_LENGTH)),
-  '909': Array.from({ length: 32 }, () => createEmptyPattern(DEFAULT_LENGTH)),
-});
+const defaultTB303Settings: TB303Settings = { filterCutoff: 1000, filterResonance: 0.5, filterEnvelope: 0.5, accent: 0.5, slide: 0.5, volume: 0.8, pan: 0 };
+const defaultDrumSettings: DrumSettings = { decay: 0.5, tone: 0.5, volume: 0.8, pan: 0 };
+const defaultGlobalSettings: GlobalSettings = { bpm: 120, swing: 0, masterVolume: 0.7 };
 
-const initialState: SequencerState = {
-  currentStep: 0,
-  isPlaying: false,
-  tempo: 120,
-  patterns: createDefaultPatterns(),
-  currentPattern: { '303_1': 0, '303_2': 0, '808': 0, '909': 0 },
-  patternLength: { '303_1': DEFAULT_LENGTH, '303_2': DEFAULT_LENGTH, '808': DEFAULT_LENGTH, '909': DEFAULT_LENGTH },
+const initialState: SequencerStoreState = {
+  tb303Patterns: [Array(4).fill(null).map(() => createDefaultTB303Pattern()), Array(4).fill(null).map(() => createDefaultTB303Pattern())],
+  tr808Patterns: Array(11).fill(null).map(() => Array(4).fill(null).map(() => createDefaultDrumPattern('BD'))),
+  tr909Patterns: Array(11).fill(null).map(() => Array(4).fill(null).map(() => createDefaultDrumPattern('BD'))),
+  tb303Settings: [{ ...defaultTB303Settings }, { ...defaultTB303Settings }],
+  tr808Settings: Array(11).fill(null).map(() => ({ ...defaultDrumSettings })),
+  tr909Settings: Array(11).fill(null).map(() => ({ ...defaultDrumSettings })),
+  globalSettings: { ...defaultGlobalSettings },
+  currentPattern: 0
 };
 
-export const useSequencerStore = create<SequencerState & {
-  setPattern: (section: SectionType, idx: number, pattern: Pattern) => void;
-  setStepNote: (section: SectionType, step: number, note: string | null) => void;
-  setStepInstrument: (section: SectionType, step: number, inst: string | null) => void;
-  toggleStepAccent: (section: SectionType, step: number) => void;
-  toggleStepSlide: (section: SectionType, step: number) => void;
-  toggleStepDown: (section: SectionType, step: number) => void;
-  toggleStepUp: (section: SectionType, step: number) => void;
-  setCurrentPattern: (section: SectionType, idx: number) => void;
-  setPatternLength: (section: SectionType, len: number) => void;
-  setCurrentStep: (step: number) => void;
-  setIsPlaying: (playing: boolean) => void;
-  setTempo: (tempo: number) => void;
-  clearPattern: (section: SectionType, idx: number) => void;
-  copyPattern: (fromSec: SectionType, fromIdx: number, toSec: SectionType, toIdx: number) => void;
-  setStepData: (section: SectionType, step: number, data: Partial<PatternStep>) => void;
-  reset: () => void;
-}>((set, get) => ({
+export const getTB303Pattern = (synthIndex: number, patternIndex: number): TB303Pattern | null => {
+  const store = useSequencerStore.getState();
+  if (synthIndex >= 0 && synthIndex < store.tb303Patterns.length && patternIndex >= 0 && patternIndex < store.tb303Patterns[synthIndex].length) {
+    return store.tb303Patterns[synthIndex][patternIndex];
+  }
+  return null;
+};
+
+export const getTR808Pattern = (drumMachineIndex: number, patternIndex: number, instrumentIndex: number): DrumPattern | null => {
+  const store = useSequencerStore.getState();
+  if (drumMachineIndex >= 0 && drumMachineIndex < store.tr808Patterns.length && patternIndex >= 0 && patternIndex < store.tr808Patterns[drumMachineIndex].length && instrumentIndex >= 0 && instrumentIndex < store.tr808Patterns[drumMachineIndex][patternIndex].length) {
+    return store.tr808Patterns[drumMachineIndex][patternIndex][instrumentIndex];
+  }
+  return null;
+};
+
+export const getTR909Pattern = (drumMachineIndex: number, patternIndex: number, instrumentIndex: number): DrumPattern | null => {
+  const store = useSequencerStore.getState();
+  if (drumMachineIndex >= 0 && drumMachineIndex < store.tr909Patterns.length && patternIndex >= 0 && patternIndex < store.tr909Patterns[drumMachineIndex].length && instrumentIndex >= 0 && instrumentIndex < store.tr909Patterns[drumMachineIndex][patternIndex].length) {
+    return store.tr909Patterns[drumMachineIndex][patternIndex][instrumentIndex];
+  }
+  return null;
+};
+
+interface SequencerStoreActions {
+  setTB303Pattern: (synthIndex: number, patternIndex: number, pattern: TB303Pattern) => void;
+  setTR808Pattern: (drumMachineIndex: number, patternIndex: number, instrumentIndex: number, pattern: DrumPattern) => void;
+  setTR909Pattern: (drumMachineIndex: number, patternIndex: number, instrumentIndex: number, pattern: DrumPattern) => void;
+  setTB303Setting: (synthIndex: number, setting: keyof TB303Settings, value: number) => void;
+  setTR808Setting: (drumIndex: number, setting: keyof DrumSettings, value: number) => void;
+  setTR909Setting: (drumIndex: number, setting: keyof DrumSettings, value: number) => void;
+  setGlobalSetting: (setting: keyof GlobalSettings, value: number) => void;
+  setCurrentPattern: (patternIndex: number) => void;
+}
+
+type SequencerStore = SequencerStoreState & SequencerStoreActions;
+
+export const useSequencerStore = create<SequencerStore>((set, get) => ({
   ...initialState,
-  setPattern: (s, i, p) => set((state) => ({
-    patterns: { ...state.patterns, [s]: [...state.patterns[s].slice(0, i), p, ...state.patterns[s].slice(i + 1)] }
-  })),
-  setStepNote: (s, step, note) => {
-    const ci = get().currentPattern[s];
-    set((state) => {
-      const ps = { ...state.patterns };
-      const p = { ...ps[s][ci] };
-      const steps = [...p.steps];
-      steps[step % state.patternLength[s]] = { ...steps[step % state.patternLength[s]], note: note || undefined };
-      p.steps = steps; ps[s][ci] = p;
-      return { patterns: ps };
-    });
+  setTB303Pattern: (synthIndex: number, patternIndex: number, pattern: TB303Pattern) => {
+    set({ tb303Patterns: get().tb303Patterns.map((synthPatterns, i) => i === synthIndex ? synthPatterns.map((p, j) => j === patternIndex ? pattern : p) : synthPatterns) });
   },
-  setStepInstrument: (s, step, inst) => {
-    const ci = get().currentPattern[s];
-    set((state) => {
-      const ps = { ...state.patterns };
-      const p = { ...ps[s][ci] };
-      const steps = [...p.steps];
-      steps[step % state.patternLength[s]] = { ...steps[step % state.patternLength[s]], instrument: inst || undefined };
-      p.steps = steps; ps[s][ci] = p;
-      return { patterns: ps };
-    });
+  setTR808Pattern: (drumMachineIndex: number, patternIndex: number, instrumentIndex: number, pattern: DrumPattern) => {
+    set({ tr808Patterns: get().tr808Patterns.map((drumPatterns, i) => i === drumMachineIndex ? drumPatterns.map((instrPatterns, j) => j === patternIndex ? instrPatterns.map((p, k) => k === instrumentIndex ? pattern : p) : instrPatterns) : drumPatterns) });
   },
-  toggleStepAccent: (s, step) => {
-    const ci = get().currentPattern[s];
-    set((state) => {
-      const ps = { ...state.patterns };
-      const p = { ...ps[s][ci] };
-      const steps = [...p.steps];
-      const cs = steps[step % state.patternLength[s]];
-      steps[step % state.patternLength[s]] = { ...cs, accent: !cs.accent };
-      p.steps = steps; ps[s][ci] = p;
-      return { patterns: ps };
-    });
+  setTR909Pattern: (drumMachineIndex: number, patternIndex: number, instrumentIndex: number, pattern: DrumPattern) => {
+    set({ tr909Patterns: get().tr909Patterns.map((drumPatterns, i) => i === drumMachineIndex ? drumPatterns.map((instrPatterns, j) => j === patternIndex ? instrPatterns.map((p, k) => k === instrumentIndex ? pattern : p) : instrPatterns) : drumPatterns) });
   },
-  toggleStepSlide: (s, step) => {
-    const ci = get().currentPattern[s];
-    set((state) => {
-      const ps = { ...state.patterns };
-      const p = { ...ps[s][ci] };
-      const steps = [...p.steps];
-      const cs = steps[step % state.patternLength[s]];
-      steps[step % state.patternLength[s]] = { ...cs, slide: !cs.slide };
-      p.steps = steps; ps[s][ci] = p;
-      return { patterns: ps };
-    });
+  setTB303Setting: (synthIndex: number, setting: keyof TB303Settings, value: number) => {
+    set({ tb303Settings: get().tb303Settings.map((settings, i) => i === synthIndex ? { ...settings, [setting]: value } : settings) });
   },
-  toggleStepDown: (s, step) => {
-    const ci = get().currentPattern[s];
-    set((state) => {
-      const ps = { ...state.patterns };
-      const p = { ...ps[s][ci] };
-      const steps = [...p.steps];
-      const cs = steps[step % state.patternLength[s]];
-      steps[step % state.patternLength[s]] = { ...cs, down: !cs.down };
-      p.steps = steps; ps[s][ci] = p;
-      return { patterns: ps };
-    });
+  setTR808Setting: (drumIndex: number, setting: keyof DrumSettings, value: number) => {
+    set({ tr808Settings: get().tr808Settings.map((settings, i) => i === drumIndex ? { ...settings, [setting]: value } : settings) });
   },
-  toggleStepUp: (s, step) => {
-    const ci = get().currentPattern[s];
-    set((state) => {
-      const ps = { ...state.patterns };
-      const p = { ...ps[s][ci] };
-      const steps = [...p.steps];
-      const cs = steps[step % state.patternLength[s]];
-      steps[step % state.patternLength[s]] = { ...cs, up: !cs.up };
-      p.steps = steps; ps[s][ci] = p;
-      return { patterns: ps };
-    });
+  setTR909Setting: (drumIndex: number, setting: keyof DrumSettings, value: number) => {
+    set({ tr909Settings: get().tr909Settings.map((settings, i) => i === drumIndex ? { ...settings, [setting]: value } : settings) });
   },
-  setCurrentPattern: (s, i) => set((state) => ({
-    currentPattern: { ...state.currentPattern, [s]: Math.max(0, Math.min(31, i)) }
-  })),
-  setPatternLength: (s, l) => set((state) => ({
-    patternLength: { ...state.patternLength, [s]: Math.max(1, Math.min(32, l)) }
-  })),
-  setCurrentStep: (step) => set({ currentStep: step }),
-  setIsPlaying: (playing) => set({ isPlaying: playing }),
-  setTempo: (tempo) => set({ tempo: Math.max(40, Math.min(300, tempo)) }),
-  clearPattern: (s, i) => set((state) => ({
-    patterns: { ...state.patterns, [s]: [...state.patterns[s].slice(0, i), createEmptyPattern(state.patternLength[s]), ...state.patterns[s].slice(i + 1)] }
-  })),
-  copyPattern: (fs, fi, ts, ti) => set((state) => {
-    const ps = { ...state.patterns };
-    const fp = ps[fs][fi];
-    const tl = state.patternLength[ts];
-    const as = fp.steps.slice(0, tl);
-    ps[ts][ti] = { ...fp, steps: as.length < tl ? [...as, ...Array.from({ length: tl - as.length }, () => ({}))] : as };
-    return { patterns: ps };
-  }),
-  setStepData: (s, step, data) => {
-    const ci = get().currentPattern[s];
-    set((state) => {
-      const ps = { ...state.patterns };
-      const p = { ...ps[s][ci] };
-      const steps = [...p.steps];
-      steps[step % state.patternLength[s]] = { ...steps[step % state.patternLength[s]], ...data };
-      p.steps = steps; ps[s][ci] = p;
-      return { patterns: ps };
-    });
+  setGlobalSetting: (setting: keyof GlobalSettings, value: number) => {
+    set({ globalSettings: { ...get().globalSettings, [setting]: value } });
   },
-  reset: () => set(initialState),
+  setCurrentPattern: (patternIndex: number) => {
+    set({ currentPattern: patternIndex });
+  }
 }));
