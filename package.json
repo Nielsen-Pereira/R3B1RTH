@@ -1,16 +1,14 @@
 {
-  "name": "R3B1RTH",
-  "version": "0.1.0",
-  "description": "Propellerhead ReBirth RB-338 recreation as a responsive web application",
+  "name": "r3b1rth",
+  "version": "1.0.0",
+  "description": "ReBirth RB-338 Web Emulation",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -23,33 +21,10 @@
     "@vitejs/plugin-react": "^4.2.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
-    "vitest": "^1.1.0",
-    "@vitest/coverage-v8": "^1.1.0",
-    "@vitest/ui": "^1.1.0",
-    "jsdom": "^23.0.1",
-    "eslint": "^8.55.0",
-    "@typescript-eslint/eslint-plugin": "^6.13.2",
-    "@typescript-eslint/parser": "^6.13.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5"
+    "vitest": "^1.1.0"
   },
-  "keywords": [
-    "rebirth",
-    "rb-338",
-    "drum-machine",
-    "synthesizer",
-    "web-audio",
-    "react",
-    "typescript"
-  ],
+  "keywords": ["rebirth", "rb-338", "synthesizer", "drum-machine", "tb-303", "tr-808", "tr-909", "web-audio"],
   "author": "Nielsen Pereira",
   "license": "MIT",
-  "homepage": "https://github.com/Nielsen-Pereira/R3B1RTH",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Nielsen-Pereira/R3B1RTH.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Nielsen-Pereira/R3B1RTH/issues"
-  }
+  "homepage": "https://github.com/Nielsen-Pereira/R3B1RTH"
 }
