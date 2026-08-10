@@ -1,46 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { useAudioStore, useSequencerStore } from '../store';
+import React from 'react';
+import { useAudioStore } from '../store/audioStore';
+import { useSequencerStore } from '../store/sequencerStore';
+import { useSwingStore } from '../store/swingStore';
 
-export const Transport: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [bpm, setBpm] = useState<number>(120);
-  const [currentBeat, setCurrentBeat] = useState<number>(0);
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [tempoInput, setTempoInput] = useState<string>('120');
-  const { start: startAudio, stop: stopAudio, setBPM, getCurrentBeat } = useAudioStore();
-  const { globalSettings, setGlobalSetting } = useSequencerStore();
+interface TransportProps {
+  onPatternChange?: (patternIndex: number) => void;
+}
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isPlaying) { const beat = getCurrentBeat(); setCurrentBeat(beat); setCurrentStep(beat % 16); }
-    }, 50);
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+const Transport: React.FC<TransportProps> = ({ onPatternChange }) => {
+  const { start, stop, setBPM, setMasterVolume, transport } = useAudioStore();
+  const { setGlobalSetting, currentPattern, setCurrentPattern } = useSequencerStore();
+  const { setSwingAmount, setSwingEnabled, swingAmount, swingEnabled } = useSwingStore();
 
-  const handlePlay = () => { if (!isPlaying) { startAudio(); setIsPlaying(true); } };
-  const handleStop = () => { if (isPlaying) { stopAudio(); setIsPlaying(false); setCurrentStep(0); } };
-  const handleBpmSubmit = (e: React.FormEvent) => { e.preventDefault(); const newBpm = parseInt(tempoInput) || 120; setBpm(Math.min(Math.max(newBpm, 20), 300)); setBPM(newBpm); setGlobalSetting('bpm', newBpm); };
-  const handleBpmIncrease = () => { const newBpm = bpm + 1; setBpm(Math.min(newBpm, 300)); setBPM(newBpm); setTempoInput(newBpm.toString()); setGlobalSetting('bpm', newBpm); };
-  const handleBpmDecrease = () => { const newBpm = bpm - 1; setBpm(Math.max(newBpm, 20)); setBPM(newBpm); setTempoInput(newBpm.toString()); setGlobalSetting('bpm', newBpm); };
+  const handlePlay = () => { start(); };
+  const handleStop = () => { stop(); };
+  const handleBPMChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const bpm = parseInt(e.target.value) || 120;
+    setBPM(bpm);
+    setGlobalSetting('bpm', bpm);
+  };
+  const handleSwingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const swing = parseFloat(e.target.value) || 0;
+    setSwingAmount(swing);
+    setSwingEnabled(swing > 0);
+    setGlobalSetting('swing', swing);
+  };
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const volume = parseFloat(e.target.value) || 0.7;
+    setMasterVolume(volume);
+  };
+  const handlePatternChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const patternIndex = parseInt(e.target.value);
+    setCurrentPattern(patternIndex);
+    if (onPatternChange) onPatternChange(patternIndex);
+  };
 
   return (
-    <div className="transport">
-      <div className="transport-controls">
-        <button onClick={handleStop} className="transport-button stop" disabled={!isPlaying}>Stop</button>
-        <button onClick={handlePlay} className="transport-button play" disabled={isPlaying}>Play</button>
-        <div className="bpm-control">
-          <button onClick={handleBpmDecrease} className="bpm-adjust">-</button>
-          <form onSubmit={handleBpmSubmit}><input type="number" value={tempoInput} onChange={(e) => setTempoInput(e.target.value)} min="20" max="300" className="bpm-input" /></form>
-          <button onClick={handleBpmIncrease} className="bpm-adjust">+</button><span className="bpm-label">BPM</span>
-        </div>
+    <section className="transport-controls">
+      <h2>Transport</h2>
+      <div className="control-group">
+        <button onClick={handlePlay} disabled={transport.isPlaying}>Play</button>
+        <button onClick={handleStop} disabled={!transport.isPlaying}>Stop</button>
       </div>
-      <div className="transport-display">
-        <div className="beat-indicator"><span className="current-beat">{currentBeat + 1}</span><span className="beat-divider">/</span><span className="total-beats">16</span></div>
-        <div className="step-indicator">Step: {currentStep + 1}</div>
-        <div className="step-leds">{Array.from({ length: 16 }).map((_, i) => <div key={i} className={`led ${i === currentStep ? 'active' : ''} ${i % 4 === 0 ? 'strong' : ''}`} />)}</div>
+      <div className="control-group">
+        <label>BPM: <input type="range" min="40" max="200" value={transport.bpm} onChange={handleBPMChange} /> {transport.bpm}</label>
       </div>
-      <div className="transport-status"><span className={`status-indicator ${isPlaying ? 'playing' : 'stopped'}`}>{isPlaying ? 'Playing' : 'Stopped'}</span></div>
-    </div>
+      <div className="control-group">
+        <label>Swing: <input type="range" min="0" max="1" step="0.1" value={swingAmount} onChange={handleSwingChange} /> {swingAmount.toFixed(1)}</label>
+      </div>
+      <div className="control-group">
+        <label>Volume: <input type="range" min="0" max="1" step="0.01" value={transport.isPlaying ? 0.7 : 0.7} onChange={handleVolumeChange} /></label>
+      </div>
+      <div className="control-group">
+        <label>Pattern: <select value={currentPattern} onChange={handlePatternChange}>
+          {Array.from({ length: 32 }, (_, i) => <option key={i} value={i}>Pattern {i + 1}</option>)}
+        </select></label>
+      </div>
+    </section>
   );
 };
 
