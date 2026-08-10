@@ -1,196 +1,52 @@
-import React, { useState } from 'react';
-import { useAudioStore } from '../../store/audioStore';
-import { useSequencerStore } from '../../store/sequencerStore';
-import { useUIStore } from '../../store/uiStore';
-import Knob from '../ui/Knob';
-import Fader from '../ui/Fader';
-import Button from '../ui/Button';
-import LED from '../ui/LED';
-import StepButton from '../ui/StepButton';
-import { SectionType, Note } from '../../types/audio';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAudioStore, useSequencerStore } from '../../store';
 
-interface TB303SectionProps {
-  section: SectionType;
-}
+interface TB303SectionProps { id: number; name: string; }
 
-const TB303Section: React.FC<TB303SectionProps> = ({ section }) => {
-  const { tb303_1Params, tb303_2Params, setTB303_1Param, setTB303_2Param, sectionParams, setSectionParam } = useAudioStore();
-  const { patterns, currentPattern, patternLength, setStep, isPlaying } = useSequencerStore();
-  const { theme } = useUIStore();
+export const TB303Section: React.FC<TB303SectionProps> = ({ id, name }) => {
+  const [activePattern, setActivePattern] = useState<number>(0);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { tb303Patterns, setTB303Pattern, getTB303Pattern, tb303Settings, setTB303Setting } = useSequencerStore();
+  const { playTB303Note, setTB303FilterCutoff, setTB303FilterResonance } = useAudioStore();
+  const pattern = getTB303Pattern(id, activePattern);
+  const settings = tb303Settings[id];
 
-  const [selectedStep, setSelectedStep] = useState<number | null>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.clearRect(0, 0, width, height);
+    const cellSize = width / 16;
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 16; i++) { ctx.beginPath(); ctx.moveTo(i * cellSize, 0); ctx.lineTo(i * cellSize, height); ctx.stroke(); }
+    if (pattern) { ctx.fillStyle = '#00ff00'; for (let step = 0; step < 16; step++) { if (pattern.steps[step].active) { ctx.fillRect(step * cellSize + 2, 2, cellSize - 4, height - 4); } } }
+  }, [pattern, activePattern]);
 
-  const isTB303_1 = section === '303_1';
-  const params = isTB303_1 ? tb303_1Params : tb303_2Params;
-  const setParam = isTB303_1 ? setTB303_1Param : setTB303_2Param;
-
-  const currentPatternIndex = currentPattern[section];
-  const currentPatternData = patterns[section][currentPatternIndex];
-  const length = patternLength[section];
-
-  const sectionTitle = `TB-303 ${isTB303_1 ? '1' : '2'}`;
-
-  const notes: Note[] = [
-    'C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1',
-    'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2',
-    'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3',
-    'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4',
-  ];
-
-  const handleStepClick = (stepIndex: number) => {
-    if (isPlaying) return;
-    setSelectedStep(stepIndex);
-  };
-
-  const handleStepRightClick = (stepIndex: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isPlaying) return;
-    const currentStep = currentPatternData.steps[stepIndex];
-    setStep(section, stepIndex, { accent: !currentStep.accent });
-  };
-
-  const getStepDisplay = (stepIndex: number) => {
-    const step = currentPatternData.steps[stepIndex];
-    if (!step.note) return null;
-    return step.note;
-  };
+  const handleStepClick = (stepIndex: number) => { if (!pattern) return; const newPattern = { ...pattern }; newPattern.steps[stepIndex].active = !newPattern.steps[stepIndex].active; setTB303Pattern(id, activePattern, newPattern); };
+  const handleCutoffChange = (value: number) => { setTB303Setting(id, 'filterCutoff', value); setTB303FilterCutoff(id, value); };
+  const handleResonanceChange = (value: number) => { setTB303Setting(id, 'filterResonance', value); setTB303FilterResonance(id, value); };
+  const handlePatternChange = (patternIndex: number) => { setActivePattern(patternIndex); };
+  const triggerNote = (note: number) => { playTB303Note(id, note); };
+  const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const octaves = [2, 3, 4];
 
   return (
-    <div className={`synth-section ${section}`}>
-      <div className="section-header">
-        <span className="section-title">{sectionTitle}</span>
-        <LED active={sectionParams[section].mute ? false : true} color="green" size="small" />
+    <div className="tb303-section">
+      <div className="section-header"><h3>{name}</h3><div className="section-controls"><button onClick={() => setShowSettings(!showSettings)}>Settings</button></div></div>
+      <div className="pattern-selector">{Array.from({ length: 4 }).map((_, i) => <button key={i} onClick={() => handlePatternChange(i)} className={activePattern === i ? 'active' : ''}>Pattern {i + 1}</button>)}</div>
+      <div className="sequencer-grid">
+        <canvas ref={canvasRef} width={400} height={80} onClick={(e) => { const rect = (e.target as HTMLCanvasElement).getBoundingClientRect(); const x = e.clientX - rect.left; const cellSize = rect.width / 16; const step = Math.floor(x / cellSize); if (step >= 0 && step < 16) { handleStepClick(step); } }} />
+        <div className="step-indicators">{Array.from({ length: 16 }).map((_, i) => <div key={i} className={`step ${pattern?.steps[i].active ? 'active' : ''}`} onClick={() => handleStepClick(i)}>{i + 1}</div>)}</div>
       </div>
-
-      <div className="section-controls">
-        <div className="synth-controls">
-          <div className="waveform-control">
-            <Button
-              variant={params.waveform === 'sawtooth' ? 'primary' : 'secondary'}
-              size="small"
-              onClick={() => setParam('waveform', params.waveform === 'sawtooth' ? 'square' : 'sawtooth')}
-            >
-              {params.waveform.toUpperCase()}
-            </Button>
-          </div>
-
-          <div className="param-row">
-            <div className="param-group">
-              <Knob
-                value={params.tune}
-                min={-24}
-                max={24}
-                onChange={(v) => setParam('tune', v)}
-                label="Tune"
-                size="small"
-              />
-              <Knob
-                value={params.cutoff}
-                min={0}
-                max={100}
-                onChange={(v) => setParam('cutoff', v)}
-                label="Cutoff"
-                size="medium"
-              />
-              <Knob
-                value={params.resonance}
-                min={0}
-                max={100}
-                onChange={(v) => setParam('resonance', v)}
-                label="Resonance"
-                size="small"
-              />
-            </div>
-
-            <div className="param-group">
-              <Knob
-                value={params.envMod}
-                min={0}
-                max={100}
-                onChange={(v) => setParam('envMod', v)}
-                label="Env Mod"
-                size="medium"
-              />
-              <Knob
-                value={params.decay}
-                min={0}
-                max={100}
-                onChange={(v) => setParam('decay', v)}
-                label="Decay"
-                size="small"
-              />
-              <Knob
-                value={params.accent}
-                min={0}
-                max={100}
-                onChange={(v) => setParam('accent', v)}
-                label="Accent"
-                size="small"
-              />
-            </div>
-          </div>
-
-          <div className="vintage-control">
-            <Button
-              variant={params.vintage ? 'primary' : 'secondary'}
-              size="small"
-              onClick={() => setParam('vintage', !params.vintage)}
-            >
-              Vintage
-            </Button>
-          </div>
-        </div>
-
-        <div className="section-mixer">
-          <Fader
-            value={sectionParams[section].level}
-            min={0}
-            max={100}
-            onChange={(v) => setSectionParam(section, 'level', v)}
-            label="Level"
-            orientation="vertical"
-          />
-          <Fader
-            value={sectionParams[section].pan}
-            min={-50}
-            max={50}
-            onChange={(v) => setSectionParam(section, 'pan', v)}
-            label="Pan"
-            orientation="vertical"
-          />
-        </div>
-      </div>
-
-      <div className="section-sequencer">
-        <div className="step-buttons">
-          {Array.from({ length }).map((_, stepIndex) => {
-            const step = currentPatternData.steps[stepIndex];
-            const hasNote = !!step.note;
-            const noteDisplay = getStepDisplay(stepIndex);
-            
-            return (
-              <div key={stepIndex} className="tb303-step">
-                <StepButton
-                  active={hasNote}
-                  accent={step.accent}
-                  onClick={() => handleStepClick(stepIndex)}
-                  onRightClick={(e) => handleStepRightClick(stepIndex, e)}
-                  size="small"
-                >
-                  {noteDisplay ? noteDisplay.replace(/(\w)(\d)/, '$1$2') : ''}
-                </StepButton>
-              </div>
-            );
-          })}
-        </div>
-        <div className="sequencer-controls">
-          <Button size="small" onClick={() => {}}>Clear</Button>
-          <Button size="small" onClick={() => {}}>Copy</Button>
-          <Button size="small" onClick={() => {}}>Paste</Button>
-        </div>
-      </div>
+      <div className="note-controls"><div className="note-grid">{octaves.map(octave => <div key={octave} className="octave-row">{notes.map((note, idx) => { const noteValue = octave * 12 + idx; return <button key={note} onClick={() => triggerNote(noteValue)} className="note-key">{note}</button>; })}</div>)}</div>
+      {showSettings && <div className="tb303-settings"><div className="filter-controls"><label>Cutoff: {Math.round(settings?.filterCutoff || 1000)} Hz<input type="range" min="20" max="5000" value={settings?.filterCutoff || 1000} onChange={(e) => handleCutoffChange(parseInt(e.target.value))} /></label><label>Resonance: {Math.round((settings?.filterResonance || 0) * 100)}%<input type="range" min="0" max="1" step="0.01" value={settings?.filterResonance || 0} onChange={(e) => handleResonanceChange(parseFloat(e.target.value))} /></label></div></div>}
     </div>
   );
 };
 
-export default React.memo(TB303Section);
+export default TB303Section;
