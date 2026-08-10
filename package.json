@@ -1,14 +1,13 @@
 {
-  "name": "r3b1rth",
+  "name": "R3B1RTH",
   "version": "1.0.0",
-  "description": "ReBirth RB-338 Web Emulation",
+  "description": "Propellerhead ReBirth RB-338 Web Emulator",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest",
-    "lint": "eslint src --ext .ts,.tsx"
+    "test": "vitest"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -22,9 +21,5 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vitest": "^1.1.0"
-  },
-  "keywords": ["rebirth", "rb-338", "synthesizer", "drum-machine", "tb-303", "tr-808", "tr-909", "web-audio"],
-  "author": "Nielsen Pereira",
-  "license": "MIT",
-  "homepage": "https://github.com/Nielsen-Pereira/R3B1RTH"
+  }
 }
