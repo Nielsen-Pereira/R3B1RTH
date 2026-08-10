@@ -1,13 +1,62 @@
 import { create } from 'zustand';
-import { getAudioEngine } from '../utils/audioEngine';
-import { AudioStoreState, TB303Settings, DrumSettings, DistortionSettings, PCFSettings, CompressorSettings, DelaySettings, TransportState, GlobalSettings } from '../types/audio';
+import { getAudioEngine, destroyAudioEngine } from '../utils/audioEngine';
+import { 
+  AudioStoreState, 
+  TB303Settings, 
+  DrumSettings, 
+  DistortionSettings, 
+  PCFSettings, 
+  CompressorSettings, 
+  DelaySettings, 
+  TransportState, 
+  GlobalSettings 
+} from '../types/audio';
 
-const defaultTB303Settings: TB303Settings = { filterCutoff: 1000, filterResonance: 0.5, filterEnvelope: 0.5, accent: 0.5, slide: 0.5, volume: 0.8, pan: 0 };
-const defaultDrumSettings: DrumSettings = { decay: 0.5, tone: 0.5, volume: 0.8, pan: 0 };
-const defaultDistortionSettings: DistortionSettings = { enabled: true, wet: 0.5, drive: 0.5 };
-const defaultPCFSettings: PCFSettings = { enabled: true, wet: 0.5, delayTime: 0.003, feedback: 0.5 };
-const defaultCompressorSettings: CompressorSettings = { enabled: true, wet: 1.0, threshold: -20, ratio: 4, attack: 0.01, release: 0.1 };
-const defaultDelaySettings: DelaySettings = { enabled: true, wet: 0.5, delayTime: 0.3, feedback: 0.5 };
+const defaultTB303Settings: TB303Settings = { 
+  filterCutoff: 1000, 
+  filterResonance: 0.5, 
+  filterEnvelope: 0.5, 
+  accent: 0.5, 
+  slide: 0.5, 
+  volume: 0.8, 
+  pan: 0 
+};
+
+const defaultDrumSettings: DrumSettings = { 
+  decay: 0.5, 
+  tone: 0.5, 
+  volume: 0.8, 
+  pan: 0 
+};
+
+const defaultDistortionSettings: DistortionSettings = { 
+  enabled: true, 
+  wet: 0.5, 
+  drive: 0.5 
+};
+
+const defaultPCFSettings: PCFSettings = { 
+  enabled: true, 
+  wet: 0.5, 
+  delayTime: 0.003, 
+  feedback: 0.5 
+};
+
+const defaultCompressorSettings: CompressorSettings = { 
+  enabled: true, 
+  wet: 1.0, 
+  threshold: -20, 
+  ratio: 4, 
+  attack: 0.01, 
+  release: 0.1 
+};
+
+const defaultDelaySettings: DelaySettings = { 
+  enabled: true, 
+  wet: 0.5, 
+  delayTime: 0.3, 
+  feedback: 0.5 
+};
 
 const initialState: AudioStoreState = {
   tb303Synths: [{ ...defaultTB303Settings }, { ...defaultTB303Settings }],
@@ -69,5 +118,5 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
   setDelayTime: (effectIndex: number, time: number) => { getAudioEngine().setDelayTime(time); set({ delay: get().delay.map((e, i) => i === effectIndex ? { ...e, delayTime: time } : e) }); },
   setDelayFeedback: (effectIndex: number, feedback: number) => { getAudioEngine().setDelayFeedback(feedback); set({ delay: get().delay.map((e, i) => i === effectIndex ? { ...e, feedback } : e) }); },
   setMasterVolume: (volume: number) => { getAudioEngine().setMasterVolume(volume); set({ global: { ...get().global, masterVolume: volume } }); },
-  destroy: () => {}
+  destroy: () => { destroyAudioEngine(); }
 }));
