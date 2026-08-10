@@ -1,169 +1,49 @@
-import React from 'react';
-import { useAudioStore } from '../../store/audioStore';
-import { useSequencerStore } from '../../store/sequencerStore';
-import { useUIStore } from '../../store/uiStore';
-import Knob from '../ui/Knob';
-import Fader from '../ui/Fader';
-import Button from '../ui/Button';
-import LED from '../ui/LED';
-import StepButton from '../ui/StepButton';
-import { SectionType, TR909Instrument } from '../../types/audio';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAudioStore, useSequencerStore } from '../../store';
+import { TR909Instrument } from '../../types/audio';
 
-interface TR909SectionProps {
-  section: SectionType;
-}
+interface TR909SectionProps { id: number; name: string; }
 
-const TR909Section: React.FC<TR909SectionProps> = ({ section }) => {
-  const { tr909Params, setTR909Param, sectionParams, setSectionParam } = useAudioStore();
-  const { patterns, currentPattern, patternLength, setStep, isPlaying } = useSequencerStore();
-  const { theme } = useUIStore();
+const TR909_INSTRUMENTS: TR909Instrument[] = ['BD', 'SD', 'LT', 'MT', 'HT', 'RS', 'CP', 'CH', 'OH', 'CC', 'RC'];
+const INSTRUMENT_NAMES: Record<TR909Instrument, string> = { BD: 'Bass Drum', SD: 'Snare Drum', LT: 'Low Tom', MT: 'Mid Tom', HT: 'High Tom', RS: 'Rimshot', CP: 'Clap', CH: 'Closed Hi-Hat', OH: 'Open Hi-Hat', CC: 'Crash Cymbal', RC: 'Ride Cymbal' };
 
-  const instruments: TR909Instrument[] = ['BD', 'SD', 'LT', 'MT', 'HT', 'RS', 'CP', 'CH', 'OH', 'CC', 'RC'];
-  const currentPatternIndex = currentPattern[section];
-  const currentPatternData = patterns[section][currentPatternIndex];
-  const length = patternLength[section];
+export const TR909Section: React.FC<TR909SectionProps> = ({ id, name }) => {
+  const [activeInstrument, setActiveInstrument] = useState<TR909Instrument>('BD');
+  const [activePattern, setActivePattern] = useState<number>(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { tr909Patterns, setTR909Pattern, getTR909Pattern } = useSequencerStore();
+  const { triggerKick, triggerSnare, triggerHiHat } = useAudioStore();
+  const pattern = getTR909Pattern(id, activePattern, TR909_INSTRUMENTS.indexOf(activeInstrument));
 
-  const sectionTitle = 'TR-909';
-  const params = tr909Params;
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const width = canvas.width; const height = canvas.height;
+    ctx.clearRect(0, 0, width, height);
+    const cellSize = width / 16; ctx.strokeStyle = '#444'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 16; i++) { ctx.beginPath(); ctx.moveTo(i * cellSize, 0); ctx.lineTo(i * cellSize, height); ctx.stroke(); }
+    if (pattern) { ctx.fillStyle = '#00ff00'; for (let step = 0; step < 16; step++) { if (pattern.steps[step].active) { ctx.fillRect(step * cellSize + 2, 2, cellSize - 4, height - 4); } } }
+  }, [pattern, activePattern, activeInstrument]);
 
-  const handleStepClick = (stepIndex: number) => {
-    if (isPlaying) return;
-    const currentStep = currentPatternData.steps[stepIndex];
-    const instrument = currentStep.instrument === null ? 'BD' : null;
-    setStep(section, stepIndex, { instrument, accent: false, flam: false });
-  };
-
-  const handleStepRightClick = (stepIndex: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isPlaying) return;
-    const currentStep = currentPatternData.steps[stepIndex];
-    setStep(section, stepIndex, { accent: !currentStep.accent });
-  };
+  const handleStepClick = (stepIndex: number) => { if (!pattern) return; const newPattern = { ...pattern }; newPattern.steps[stepIndex].active = !newPattern.steps[stepIndex].active; setTR909Pattern(id, activePattern, TR909_INSTRUMENTS.indexOf(activeInstrument), newPattern); };
+  const handlePatternChange = (patternIndex: number) => { setActivePattern(patternIndex); };
+  const triggerInstrument = (instrument: TR909Instrument) => { if (instrument === 'BD') triggerKick(id, 1.0); else if (instrument === 'SD') triggerSnare(id, 1.0); else if (instrument === 'OH' || instrument === 'CH') triggerHiHat(id, instrument === 'OH', 1.0); };
 
   return (
-    <div className={`drum-machine-section ${section}`}>
-      <div className="section-header">
-        <span className="section-title">{sectionTitle}</span>
-        <LED active={sectionParams[section].mute ? false : true} color="green" size="small" />
+    <div className="tr909-section">
+      <div className="section-header"><h3>{name}</h3></div>
+      <div className="instrument-selector">{TR909_INSTRUMENTS.map(instrument => <button key={instrument} onClick={() => setActiveInstrument(instrument)} className={activeInstrument === instrument ? 'active' : ''}>{instrument}</button>)}</div>
+      <div className="instrument-name">{INSTRUMENT_NAMES[activeInstrument]}</div>
+      <div className="pattern-selector">{Array.from({ length: 4 }).map((_, i) => <button key={i} onClick={() => handlePatternChange(i)} className={activePattern === i ? 'active' : ''}>Pattern {i + 1}</button>)}</div>
+      <div className="sequencer-grid">
+        <canvas ref={canvasRef} width={400} height={60} onClick={(e) => { const rect = (e.target as HTMLCanvasElement).getBoundingClientRect(); const x = e.clientX - rect.left; const cellSize = rect.width / 16; const step = Math.floor(x / cellSize); if (step >= 0 && step < 16) { handleStepClick(step); } }} />
+        <div className="step-indicators">{Array.from({ length: 16 }).map((_, i) => <div key={i} className={`step ${pattern?.steps[i].active ? 'active' : ''}`} onClick={() => handleStepClick(i)}>{i + 1}</div>)}</div>
       </div>
-
-      <div className="section-controls">
-        <div className="instrument-controls">
-          {instruments.map((instrument) => (
-            <div key={instrument} className="instrument-control">
-              <Button
-                variant={params[instrument]?.level > 0 ? 'primary' : 'secondary'}
-                size="small"
-                active={params[instrument]?.level > 50}
-                onClick={() => setTR909Param(instrument, 'level', params[instrument]?.level > 0 ? 0 : 100)}
-              >
-                {instrument}
-              </Button>
-              {'tune' in params[instrument] && (
-                <Knob
-                  value={params[instrument].tune}
-                  min={0}
-                  max={100}
-                  onChange={(v) => setTR909Param(instrument, 'tune', v)}
-                  size="small"
-                  label="T"
-                />
-              )}
-              {'decay' in params[instrument] && (
-                <Knob
-                  value={params[instrument].decay}
-                  min={0}
-                  max={100}
-                  onChange={(v) => setTR909Param(instrument, 'decay', v)}
-                  size="small"
-                  label="D"
-                />
-              )}
-              {'attack' in params[instrument] && (
-                <Knob
-                  value={params[instrument].attack}
-                  min={0}
-                  max={100}
-                  onChange={(v) => setTR909Param(instrument, 'attack', v)}
-                  size="small"
-                  label="A"
-                />
-              )}
-              {instrument === 'SD' && 'tone' in params[instrument] && (
-                <Knob
-                  value={params[instrument].tone}
-                  min={0}
-                  max={100}
-                  onChange={(v) => setTR909Param(instrument, 'tone', v)}
-                  size="small"
-                  label="Tone"
-                />
-              )}
-              {instrument === 'SD' && 'snap' in params[instrument] && (
-                <Knob
-                  value={params[instrument].snap}
-                  min={0}
-                  max={100}
-                  onChange={(v) => setTR909Param(instrument, 'snap', v)}
-                  size="small"
-                  label="Snap"
-                />
-              )}
-            </div>
-          ))}
-          <div className="flam-control">
-            <Knob
-              value={params.flam}
-              min={0}
-              max={100}
-              onChange={(v) => setTR909Param('flam', v)}
-              label="Flam"
-              size="small"
-            />
-          </div>
-        </div>
-
-        <div className="section-mixer">
-          <Fader
-            value={sectionParams[section].level}
-            min={0}
-            max={100}
-            onChange={(v) => setSectionParam(section, 'level', v)}
-            label="Level"
-            orientation="vertical"
-          />
-          <Fader
-            value={sectionParams[section].pan}
-            min={-50}
-            max={50}
-            onChange={(v) => setSectionParam(section, 'pan', v)}
-            label="Pan"
-            orientation="vertical"
-          />
-        </div>
-      </div>
-
-      <div className="section-sequencer">
-        <div className="step-buttons">
-          {Array.from({ length }).map((_, stepIndex) => (
-            <StepButton
-              key={stepIndex}
-              active={!!currentPatternData.steps[stepIndex].instrument}
-              accent={currentPatternData.steps[stepIndex].accent}
-              onClick={() => handleStepClick(stepIndex)}
-              onRightClick={(e) => handleStepRightClick(stepIndex, e)}
-              size="small"
-            />
-          ))}
-        </div>
-        <div className="sequencer-controls">
-          <Button size="small" onClick={() => {}}>Clear</Button>
-          <Button size="small" onClick={() => {}}>Copy</Button>
-          <Button size="small" onClick={() => {}}>Paste</Button>
-        </div>
-      </div>
+      <div className="instrument-pad"><button onClick={() => triggerInstrument(activeInstrument)} className="trigger-pad">Trigger {activeInstrument}</button></div>
     </div>
   );
 };
 
-export default React.memo(TR909Section);
+export default TR909Section;
