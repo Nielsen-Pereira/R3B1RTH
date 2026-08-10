@@ -1,2 +1,2 @@
 export { useAudioStore } from './audioStore';
-export { useSequencerStore } from './sequencerStore';
+export { useSequencerStore, getTB303Pattern, getTR808Pattern, getTR909Pattern } from './sequencerStore';
