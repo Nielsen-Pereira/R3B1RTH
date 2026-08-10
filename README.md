@@ -1,100 +1,45 @@
-# R3B1RTH
+# R3B1RTH - ReBirth RB-338 Web Implementation
 
-A responsive web application recreation of Propellerhead's ReBirth RB-338 with 1:1 feature parity.
-
-## Overview
-
-R3B1RTH is a faithful web-based implementation of the classic ReBirth RB-338 software drum machine and synthesizer. It reproduces the TR-808, TR-909 drum machines and dual TB-303 synthesizers in a modern, responsive web interface.
+A responsive web application that recreates the classic Propellerhead ReBirth RB-338 software synthesizer.
 
 ## Features
-
-### Implemented
-- TR-808 drum machine with 11 instruments
-- TR-909 drum machine with 11 instruments + Flam control
-- Dual TB-303 synthesizers (sawtooth/square waveforms)
-- Pattern-based sequencer (32 patterns per section)
-- Song mode with pattern chaining
-- Step programming with tap recording
-- Pattern copy/paste/clear
-- Shuffle (0-100%)
-- Tempo range: 40-300 BPM
-
-### Effects
-- PCF (Pattern Controlled Filter) with 32 preset patterns
-- Delay (step-based with feedback)
-- Distortion (insert effect)
-- Compressor (insert and master)
-
-### Mixer
-- Volume and pan per section
-- Mute and solo per section
-- Delay send
-- Effect routing
+- 2 TB-303 Synthesizers with authentic filter controls
+- TR-808 and TR-909 Drum Machines with 11 instruments each
+- 4 Effects: Distortion, PCF, Compressor, Delay
+- Complete signal chain: synths/drums -> distortion -> PCF -> compressor -> delay -> master
+- Transport Controls (play, stop, BPM adjustment)
+- Pattern Sequencer with 16-step grids
+- Clipboard Operations for pattern copy/paste
+- Tap Recording with octave handling
+- Swing/Shuffle timing implementation
+- Export Functionality (WAV, AIFF, MP3 support)
+- Responsive Design for desktop and mobile
 
 ## Tech Stack
-
-- **Frontend**: React 18 + TypeScript
-- **State Management**: Zustand
-- **Audio**: Web Audio API
-- **Build**: Vite
-- **Testing**: Vitest
+- React 18 - UI framework
+- TypeScript - Type safety (strict mode, no unsafe casting)
+- Web Audio API - Audio synthesis and effects
+- Zustand - State management
+- Vite - Build tool
+- Vitest - Testing
 
 ## Project Structure
-
-```
 R3B1RTH/
-├── src/
-│   ├── components/
-│   │   ├── effects/
-│   │   ├── mixer/
-│   │   ├── sections/
-│   │   ├── sequencer/
-│   │   ├── transport/
-│   │   └── ui/
-│   ├── hooks/
-│   ├── store/
-│   ├── styles/
-│   ├── tests/
-│   ├── types/
-│   └── utils/
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── README.md
-```
+- src/
+  - components/ (sections, effects, Transport)
+  - store/ (6 Zustand stores)
+  - utils/ (audioEngine, filters)
+  - types/ (audio.ts)
+  - App.tsx, main.tsx, index.css
+- public/
+- package.json, vite.config.ts, tsconfig.json
 
 ## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- npm or yarn
-
-### Installation
-
-```bash
 npm install
-```
-
-### Development
-
-```bash
 npm run dev
-```
 
-Opens the app at `http://localhost:3000`
+## Jira
+https://nielsenpereirapro.atlassian.net/jira/software/projects/R3B
 
-### Build
-
-```bash
-npm run build
-```
-
-### Testing
-
-```bash
-npm test
-```
-
-## License
-
-MIT License
+## GitHub
+https://github.com/Nielsen-Pereira/R3B1RTH
