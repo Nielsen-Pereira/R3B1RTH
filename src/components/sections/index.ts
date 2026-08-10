@@ -1,3 +1,3 @@
-export { default as TR808Section } from './TR808Section';
-export { default as TR909Section } from './TR909Section';
-export { default as TB303Section } from './TB303Section';
+export * from './TB303Section';
+export * from './TR808Section';
+export * from './TR909Section';
