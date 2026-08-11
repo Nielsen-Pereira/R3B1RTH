@@ -10,6 +10,7 @@ import Distortion from './components/effects/Distortion';
 import PCF from './components/effects/PCF';
 import Compressor from './components/effects/Compressor';
 import Delay from './components/effects/Delay';
+import { SentryTest } from './components/SentryTest';
 
 function App() {
   const { start, stop, setBPM, setMasterVolume } = useAudioStore();
@@ -60,6 +61,8 @@ function App() {
         <p>R3B1RTH - ReBirth RB-338 Web Version</p>
         <p>Type-safe implementation with React 18, TypeScript, and Web Audio API</p>
       </footer>
+      
+      <SentryTest />
     </div>
   );
 }
