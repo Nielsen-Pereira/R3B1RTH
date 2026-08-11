@@ -14,4 +14,4 @@ export { default as MainSequencer } from './MainSequencer';
 export { default as PatternManager } from './PatternManager';
 export { default as PatternSelector } from './PatternSelector';
 
-export { default as PatternChaining } from './PatternChaining';
+export { default as EffectsRouting } from './EffectsRouting';
