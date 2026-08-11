@@ -1,7 +1,8 @@
 /**
- * Pattern Store - Batch 3 Development
- * R3B-99 to R3B-102: Pattern Editing Features (GAP-009 to GAP-012)
- * R3B-106: TB-303 Advanced Features (GAP-008)
+ * Pattern Store - Enhanced for Batch 4
+ * R3B-99 to R3B-102: Pattern Editing Features
+ * R3B-106: TB-303 Advanced Features
+ * R3B-137: Pattern Copy/Paste/Clone
  */
 
 import { create } from 'zustand';
@@ -18,6 +19,7 @@ export type PatternState = {
   patternLength: number;
   swing: number;
   shuffle: number;
+  clipboard: Pattern | null;
   
   setMode: (mode: PatternMode) => void;
   addPattern: (pattern?: Partial<Pattern>) => Pattern;
@@ -30,6 +32,8 @@ export type PatternState = {
   setShuffle: (shuffle: number) => void;
   
   clonePattern: (id: string) => Pattern;
+  copyPattern: (id: string) => void;
+  pastePattern: (targetInstrument?: InstrumentType) => Pattern | null;
   clearPattern: (id: string) => void;
   rotatePattern: (id: string, positions: number) => void;
   reversePattern: (id: string) => void;
@@ -56,6 +60,7 @@ export const usePatternStore = create<PatternState>((set, get) => ({
   patternLength: 16,
   swing: 0,
   shuffle: 0,
+  clipboard: null,
 
   setMode: (mode) => set({ mode }),
 
@@ -101,6 +106,31 @@ export const usePatternStore = create<PatternState>((set, get) => ({
       patterns: [...state.patterns, newPattern],
       currentPatternId: newPattern.id,
     }));
+    return newPattern;
+  },
+
+  copyPattern: (id) => set((state) => {
+    const pattern = state.patterns.find(p => p.id === id);
+    return { clipboard: pattern ? { ...pattern, id: '', name: pattern.name + ' (Copied)' } : null };
+  }),
+
+  pastePattern: (targetInstrument?: InstrumentType) => {
+    const state = get();
+    if (!state.clipboard) return null;
+    
+    const instrument = targetInstrument || state.currentInstrument;
+    const newPattern = {
+      ...state.clipboard,
+      id: Date.now().toString(),
+      instrument,
+      length: state.patternLength,
+    };
+    
+    set((state) => ({
+      patterns: [...state.patterns, newPattern],
+      currentPatternId: newPattern.id,
+    }));
+    
     return newPattern;
   },
 
@@ -176,6 +206,7 @@ export const usePatternStore = create<PatternState>((set, get) => ({
     patternLength: 16,
     swing: 0,
     shuffle: 0,
+    clipboard: null,
   }),
 }));
 
@@ -214,6 +245,10 @@ export const getActivePatterns = (state: PatternState): Pattern[] =>
 
 export const getEmptyPatterns = (state: PatternState): Pattern[] =>
   state.patterns.filter(p => !p.steps.some(s => s.active));
+
+export const getClipboardPattern = (state: PatternState): Pattern | null => state.clipboard;
+
+export const hasClipboardContent = (state: PatternState): boolean => state.clipboard !== null;
 
 export const getPatternStats = (pattern: Pattern) => ({
   activeSteps: countActiveSteps(pattern),

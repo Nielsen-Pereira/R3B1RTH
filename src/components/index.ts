@@ -13,3 +13,5 @@ export { default as TR909 } from './TR909';
 export { default as MainSequencer } from './MainSequencer';
 export { default as PatternManager } from './PatternManager';
 export { default as PatternSelector } from './PatternSelector';
+
+export { default as PatternActions } from './PatternActions';
