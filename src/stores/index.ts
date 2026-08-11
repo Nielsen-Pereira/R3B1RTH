@@ -10,3 +10,4 @@ export { useTB303Store, getTB303State, isTB303Enabled, isTB303Muted, isTB303Solo
 export { useTR808Store, getTR808State, isTR808Enabled, isTR808Muted, isTR808Solo, getTR808Volume, getDrumState, isDrumEnabled, getDrumParameter, TR808_PRESETS, applyTR808Preset } from './tr808Store';
 export { useTR909Store, getTR909State, isTR909Enabled, isTR909Muted, isTR909Solo, getTR909Volume, getTR909DrumState, isTR909DrumEnabled, getTR909DrumParameter, TR909_PRESETS, applyTR909Preset } from './tr909Store';
 export { usePatternStore, getPatternState, getCurrentPattern, getPatternsByInstrument, getAllPatterns, getPatternCount, isPatternMode, isSongMode, getCurrentInstrument, getPatternLength, getSwing, getShuffle, getPatternById, getPatternByIndex, getActivePatterns, getEmptyPatterns, getPatternStats, PATTERN_PRESETS, applyPatternPreset } from './patternStore';
+export { usePatternChainingStore, PATTERN_CHAIN_PRESETS, applyPatternChainPreset } from './patternChainingStore';
