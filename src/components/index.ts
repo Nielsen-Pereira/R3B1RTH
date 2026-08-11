@@ -12,3 +12,4 @@ export { default as TR808 } from './TR808';
 export { default as TR909 } from './TR909';
 export { default as MainSequencer } from './MainSequencer';
 export { default as PatternManager } from './PatternManager';
+export { default as PatternSelector } from './PatternSelector';
