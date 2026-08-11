@@ -1,0 +1,154 @@
+.automation-controls {
+  background: #2a2a2a;
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 8px;
+  min-width: 200px;
+}
+
+.automation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  background: #1a1a1a;
+  border-radius: 4px 4px 0 0;
+}
+
+.automation-header:hover {
+  background: #333;
+}
+
+.automation-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.record-button {
+  background: #666;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.record-button:hover {
+  background: #888;
+}
+
+.record-button.recording {
+  background: #ff4444;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.automation-panel {
+  padding: 12px;
+  background: #252525;
+  border-radius: 0 0 4px 4px;
+}
+
+.controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.control-item {
+  padding: 8px;
+  background: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.control-item:hover {
+  background: #444;
+}
+
+.control-item.selected {
+  background: #555;
+  border-left: 3px solid #ff6b6b;
+}
+
+.control-name {
+  font-size: 11px;
+  color: #ddd;
+}
+
+.control-details {
+  margin-top: 8px;
+  padding: 8px;
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+
+.automation-visualizer {
+  margin: 8px 0;
+}
+
+.automation-canvas {
+  background: #1a1a1a;
+  border-radius: 4px;
+  border: 1px solid #444;
+}
+
+.control-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.clear-button {
+  background: #666;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-button:hover {
+  background: #888;
+}
+
+.global-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #444;
+}
+
+.clear-all-button {
+  background: #884444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-all-button:hover {
+  background: #aa5555;
+}
