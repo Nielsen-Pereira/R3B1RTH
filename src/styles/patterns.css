@@ -1,0 +1,338 @@
+/**
+ * Pattern Styles - Batch 3 Development
+ * Styles for PatternSelector and PatternManager components
+ */
+
+/* Pattern Selector */
+.pattern-selector {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.instrument-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.instrument-selector button {
+  flex: 1;
+  padding: 0.5rem;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.instrument-selector button:hover {
+  background: var(--button-hover);
+}
+
+.instrument-selector button.active {
+  border-color: var(--accent-color);
+  background: rgba(233, 69, 96, 0.2);
+  box-shadow: var(--accent-glow);
+}
+
+.instrument-label {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.pattern-count {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+
+.active-pattern {
+  font-size: 0.65rem;
+  color: var(--accent-color);
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.pattern-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.pattern-card:hover {
+  background: var(--button-hover);
+  border-color: var(--text-secondary);
+}
+
+.pattern-card.active {
+  border-color: var(--accent-color);
+  box-shadow: var(--accent-glow);
+  background: rgba(233, 69, 96, 0.1);
+}
+
+.pattern-card.empty {
+  opacity: 0.7;
+}
+
+.pattern-header {
+  display: flex;
+  justify-content: 
+space-between;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.pattern-name {
+  font-weight: bold;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pattern-length {
+  color: var(--text-secondary);
+}
+
+.pattern-visual {
+  margin-bottom: 0.25rem;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  height: 40px;
+}
+
+.steps-grid .step {
+  background: var(--bg-secondary);
+  border-radius: 2px;
+}
+
+.steps-grid .step.active {
+  background: var(--accent-color);
+}
+
+.steps-grid .step.accent {
+  background: var(--warning-color);
+}
+
+.steps-grid .step.slide {
+  border-top: 2px solid var(--accent-color);
+}
+
+.pattern-stats {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* Pattern Manager */
+.pattern-manager {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.pattern-manager .pattern-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pattern-manager .pattern-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pattern-manager .pattern-actions button {
+  padding: 0.25rem 0.5rem;
+  background: var(--button-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.pattern-manager .pattern-actions select {
+  padding: 0.25rem;
+  background: var(--button-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.pattern-manager .instrument-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.pattern-manager .instrument-tabs button {
+  padding: 0.5rem 1rem;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pattern-manager
+ .instrument-tabs button:hover {
+  background: var(--button-hover);
+}
+
+.pattern-manager .instrument-tabs button.active {
+  background: var(--accent-color);
+  color: white;
+}
+
+.pattern-manager .pattern-list {
+  margin-bottom: 1rem;
+}
+
+.pattern-manager .pattern-list h4 {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.pattern-manager .pattern-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pattern-manager .pattern-list li {
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pattern-manager .pattern-list li:hover {
+  background: var(--button-hover);
+}
+
+.pattern-manager .pattern-list li.active {
+  background: rgba(233, 69, 96, 0.2);
+  border: 1px solid var(--accent-color);
+}
+
+.pattern-manager .pattern-list .pattern-name {
+  font-weight: bold;
+}
+
+.pattern-manager .pattern-list .pattern-info {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.pattern-manager .pattern-list .pattern-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pattern-manager .pattern-list .pattern-actions button {
+  padding: 0.15rem 0.3rem;
+  font-size: 0.7rem;
+}
+
+.pattern-manager .pattern-editor-container {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.pattern-manager .global-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.pattern-manager .control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pattern-manager .control-group label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Pattern Section */
+.pattern-section {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .pattern-section {
+    grid-template-colum
+ns: 1fr;
+  }
+  
+  .pattern-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .steps-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .pattern-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .pattern-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .steps-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
