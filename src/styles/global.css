@@ -1,789 +1,228 @@
-/* R3B1RTH - Global Styles */
-/* Propellerhead ReBirth RB-338 Recreation */
+/**
+ * Global Styles - Batch 3 Development
+ * Global CSS styles for R3B1RTH application
+ */
+
+@import './patterns.css';
 
 :root {
-  /* Color Schemes */
-  --color-background: #0a0a1a;
-  --color-surface: #1a1a2e;
-  --color-surface-light: #2a2a4a;
-  --color-primary: #0f3460;
-  --color-secondary: #e94560;
-  --color-accent: #00aaff;
-  --color-text: #ffffff;
-  --color-text-secondary: #aaaaaa;
-  --color-text-muted: #666666;
-  
-  /* UI Colors */
-  --color-knob-bg: #1a1a2e;
-  --color-knob-fg: #e94560;
-  --color-fader-bg: #2a2a4a;
-  --color-fader-fg: #ffffff;
-  --color-button-primary: #0f3460;
-  --color-button-secondary: #2a2a4a;
-  --color-button-text: #ffffff;
-  --color-led-on: #ff0000;
-  --color-led-off: #333333;
-  
-  /* Borders */
-  --border-radius: 4px;
-  --border-color: #333333;
-  --border-width: 1px;
-  
-  /* Spacing */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.5);
-  
-  /* Transitions */
-  --transition-fast: 0.1s ease;
-  --transition-normal: 0.2s ease;
-  --transition-slow: 0.3s ease;
-  
-  /* Font */
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  --font-size-xs: 10px;
-  --font-size-sm: 12px;
-  --font-size-md: 14px;
-  --font-size-lg: 16px;
-  --font-size-xl: 20px;
-  
-  /* Layout */
-  --header-height: 40px;
-  --footer-height: 30px;
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f3460;
+  --text-primary: #eaeaea;
+  --text-secondary: #b8b8b8;
+  --accent-color: #e94560;
+  --accent-glow: 0 0 10px rgba(233, 69, 96, 0.5);
+  --success-color: #4ecca3;
+  --warning-color: #ffc107;
+  --danger-color: #e94560;
+  --border-color: #2a2a4a;
+  --button-bg: #2a2a4a;
+  --button-hover: #3a3a5a;
+  --slider-track: #3a3a5a;
+  --slider-thumb: #e94560;
 }
 
-/* Dark Theme (Default) */
-[data-theme="dark"] {
-  --color-background: #0a0a1a;
-  --color-surface: #1a1a2e;
-  --color-surface-light: #2a2a4a;
-  --color-text: #ffffff;
-  --color-text-secondary: #aaaaaa;
-  --color-text-muted: #666666;
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-/* Light Theme */
-[data-theme="light"] {
-  --color-background: #f5f5f5;
-  --color-surface: #e0e0e0;
-  --color-surface-light: #d0d0d0;
-  --color-primary: #0f3460;
-  --color-secondary: #e94560;
-  --color-text: #000000;
-  --color-text-secondary: #333333;
-  --color-text-muted: #666666;
-  --color-knob-bg: #e0e0e0;
-  --color-knob-fg: #e94560;
-  --color-fader-bg: #d0d0d0;
-  --color-button-primary: #0f3460;
-  --color-button-secondary: #b0b0b0;
-  --color-button-text: #ffffff;
-  --border-color: #999999;
-}
-
-/* Reset and Base Styles */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-family);
-  background: var(--color-background);
-  color: var(--color-text);
+.app {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  min-width: 100vw;
-  overflow: hidden;
 }
 
-/* App Container */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  background: var(--color-background);
-}
-
-/* Header */
 .app-header {
-  height: var(--header-height);
-  background: var(--color-surface);
-  border-bottom: var(--border-width) solid var(--border-color);
-  display: flex;
-  align-items: center;
-  padding: 0 var(--spacing-md);
-  z-index: 100;
-}
-
-.logo {
-  display: flex;
-  flex-direction: column;
-}
-
-.logo-text {
-  font-size: var(--font-size-xl);
-  font-weight: bold;
-  color: var(--color-secondary);
-  letter-spacing: 2px;
-}
-
-.logo-subtitle {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  letter-spacing: 1px;
-}
-
-/* Main Content */
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: var(--spacing-md);
-  gap: var(--spacing-md);
-}
-
-/* Sections Grid */
-.sections-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: var(--spacing-lg);
-  flex: 1;
-  overflow: hidden;
-}
-
-/* Drum Machine Sections */
-.drum-machine-section {
-  display: flex;
-  flex-direction: column;
-  background: var(--color-surface);
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid var(--border-color);
-  padding: var(--spacing-md);
-  gap: var(--spacing-md);
-}
-
-.drum-machine-section .section-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.drum-machine-section .section-title {
-  font-size: var(--font-size-md);
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-.drum-machine-section .section-controls {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.drum-machine-section .instrument-controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  flex: 1;
-  overflow-y: auto;
-}
-
-.drum-machine-section .instrument-control {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs);
-}
-
-.drum-machine-section .section-mixer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  width: 60px;
-}
-
-.drum-machine-section .section-sequencer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.drum-machine-section .step-buttons {
-  display: grid;
-  grid-template-columns: repeat(16, 1fr);
-  gap: 2px;
-}
-
-.drum-machine-section .sequencer-controls {
-  display: flex;
-  gap: var(--spacing-xs);
-}
-
-/* Synth Sections */
-.synth-section {
-  display: flex;
-  flex-direction: column;
-  background: var(--color-surface);
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid var(--border-color);
-  padding: var(--spacing-md);
-  gap: var(--spacing-md);
-}
-
-.synth-section .synth-controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.synth-section .waveform-control {
-  display: flex;
-  justify-content: center;
-}
-
-.synth-section .param-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
-}
-
-.synth-section .param-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.synth-section .vintage-control {
-  display: flex;
-  justify-content: center;
-}
-
-.synth-section .section-sequencer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.synth-section .tb303-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.synth-section .step-modifiers {
-  display: flex;
-  gap: 2px;
-  font-size: var(--font-size-xs);
-}
-
-.synth-section .step-modifiers span {
-  background: var(--color-surface-light);
-  padding: 1px 3px;
-  border-radius: 2px;
-  color: var(--color-text-secondary);
-}
-
-/* Controls Panel */
-.controls-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  grid-column: 1 / -1;
-}
-
-/* Transport Panel */
-.transport-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-  background: var(--color-surface);
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid var(--border-color);
-  padding: var(--spacing-md);
-}
-
-.transport-panel .transport-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
-}
-
-.transport-panel .play-controls {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.transport-panel .transport-indicators {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.transport-panel .mode-toggle {
-  margin-left: auto;
-}
-
-.transport-panel .tempo-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.transport-panel .bpm-display {
-  font-size: var(--font-size-xl);
-  font-weight: bold;
-  color: var(--color-secondary);
-  min-width: 60px;
+  background: var(--bg-tertiary);
+  padding: 1rem;
   text-align: center;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.transport-panel .shuffle-control {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+.app-header h1 {
+  color: var(--accent-color);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
-.transport-panel .position-display {
-  display: flex;
-  gap: var(--spacing-lg);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
-.transport-panel .master-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.transport-panel .master-volume {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-/* Mixer Section */
-.mixer-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  background: var(--color-surface);
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid var(--border-color);
-  padding: var(--spacing-md);
-}
-
-.mixer-section .mixer-title {
-  font-size: var(--font-size-md);
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-.mixer-section .mixer-channels {
+.app-main {
+  flex: 1;
+  padding: 1rem;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
 }
 
-.mixer-section .mixer-channel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+.app-footer {
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }
 
-.mixer-section .channel-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+.instrument {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.mixer-section .channel-name {
-  font-size: var(--font-size-sm);
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-.mixer-section .channel-indicators {
-  display: flex;
-  gap: var(--spacing-xs);
-}
-
-.mixer-section .channel-controls {
-  display: flex;
-  gap: var(--spacing-xs);
-}
-
-.mixer-section .channel-buttons {
-  display: flex;
-  gap: var(--spacing-xs);
-}
-
-.mixer-section .mixer-master {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  grid-column: 1 / -1;
-}
-
-.mixer-section .master-label {
-  font-size: var(--font-size-md);
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-/* Effects Section */
-.effects-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  background: var(--color-surface);
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid var(--border-color);
-  padding: var(--spacing-md);
-}
-
-.effects-section .effects-title {
-  font-size: var(--font-size-md);
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-.effects-section .effect-panels {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-}
-
-.effects-section .effect-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  background: var(--color-surface-light);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-sm);
-}
-
-.effects-section .effect-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  font-weight: bold;
-}
-
-.effects-section .effect-controls {
-  display: flex;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
-}
-
-.effects-section .compressor-panel {
-  grid-column: 1 / -1;
-}
-
-.effects-section .compressor-sections {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--spacing-sm);
-}
-
-.effects-section .compressor-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  align-items: center;
-}
-
-.effects-section .compressor-label {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-/* Song Window */
-.song-window {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  background: var(--color-surface);
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid var(--border-color);
-  padding: var(--spacing-md);
-}
-
-.song-window .song-header {
+.instrument-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.song-window .song-title {
-  font-size: var(--font-size-md);
+.instrument-header h3 {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+.instrument-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.instrument-controls button {
+  padding: 0.25rem 0.5rem;
+  background: var(--button-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.instrument-controls button:hover {
+  background: var(--button-hover);
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--slider-track);
+  border-radius: 4px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--slider-thumb);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+select {
+  width: 100%;
+  padding: 0.5rem;
+  background: var(--button-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.transport-controls {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  grid-column: 1 / -1;
+}
+
+.playback-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.playback-buttons button {
+  flex: 1;
+  padding: 0.75rem;
+  background: var(--button-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
   font-weight: bold;
-  color: var(--color-text);
 }
 
-.song-window .song-controls {
+.playback-buttons button:hover:not(:disabled) {
+  background: var(--button-hover);
+}
+
+.playback-buttons button.recording {
+  background: var(--danger-color);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.bpm-control {
   display: flex;
-  gap: var(--spacing-xs);
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.song-window .pattern-mode {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.song-window .pattern-banks {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-}
-
-.song-window .pattern-bank {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.song-window .bank-header {
-  font-size: var(--font-size-sm);
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-.song-window .bank-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.song-window .pattern-row {
-  display: flex;
-  gap: var(--spacing-xs);
-}
-
-.song-window .song-mode {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.song-window .song-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.song-window .timeline-header {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.song-window .timeline-marker {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  min-width: 40px;
+.bpm-value {
+  min-width: 50px;
   text-align: center;
-}
-
-.song-window .song-tracks {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.song-window .song-track {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.song-window .track-header {
-  font-size: var(--font-size-sm);
   font-weight: bold;
-  color: var(--color-text);
+  color: var(--accent-color);
 }
 
-.song-window .track-events {
-  position: relative;
-  height: 30px;
-  background: var(--color-surface-light);
-  border-radius: var(--border-radius);
-}
-
-.song-window .track-event {
-  position: absolute;
-  top: 0;
-  width: 30px;
-  height: 30px;
-  background: var(--color-secondary);
-  border-radius: var(--border-radius);
+.status-indicators {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-xs);
-  color: var(--color-text);
-  transform: translateX(-50%);
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-.song-window .track-controls {
-  display: flex;
-  gap: var(--spacing-xs);
-  flex-wrap: wrap;
+.status {
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
 }
 
-.song-window .song-info {
-  display: flex;
-  justify-content: flex-end;
+.status.playing {
+  background: var(--success-color);
+  color: var(--bg-primary);
 }
 
-.song-window .song-meta {
-  display: flex;
-  gap: var(--spacing-lg);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
-/* Footer */
-.app-footer {
-  height: var(--footer-height);
-  background: var(--color-surface);
-  border-top: var(--border-width) solid var(--border-color);
-  display: flex;
-  align-items: center;
-  padding: 0 var(--spacing-md);
-}
-
-.footer-content {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-}
-
-.footer-divider {
-  color: var(--border-color);
-}
-
-/* Utility Classes */
-.vertical-stack {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.horizontal-stack {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .sections-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
-  }
-  
-  .controls-panel {
-    grid-column: 1;
-  }
-  
-  .mixer-section .mixer-channels {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .effects-section .effect-panels {
-    grid-template-columns: 1fr;
-  }
+.instruments-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
 }
 
 @media (max-width: 768px) {
-  .sections-grid {
+  .app-main {
     grid-template-columns: 1fr;
   }
-  
-  .drum-machine-section .section-controls {
-    flex-direction: column;
-  }
-  
-  .drum-machine-section .section-mixer {
-    width: 100%;
-    flex-direction: row;
-  }
-  
-  .mixer-section .mixer-channels {
+  .drum-grid {
     grid-template-columns: 1fr;
   }
-  
-  .song-window .pattern-banks {
+  .instruments-row {
     grid-template-columns: 1fr;
   }
-}
-
-/* Animations */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.blink {
-  animation: blink 0.5s infinite;
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-surface);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-surface-light);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary);
-}
-
-/* Focus Styles */
-:focus-visible {
-  outline: 2px solid var(--color-secondary);
-  outline-offset: 2px;
-}
-
-/* Selection */
-::selection {
-  background: var(--color-secondary);
-  color: var(--color-text);
 }
