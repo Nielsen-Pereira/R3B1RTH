@@ -1,13 +1,22 @@
 /**
- * TB-303 Component - Batch 2 Development
- * R3B-95, R3B-96: TR-808/TR-909 Instruments Completion
- * 
- * UI component for TB-303 Bass Line synthesizer
+ * TB-303 Component - Enhanced for Batch 4
+ * R3B-95, R3B-96, R3B-135: TR-808/TR-909 + TB-303 Advanced Parameters
+ *
+ * UI component for TB-303 Bass Line synthesizer with advanced parameters
  */
 
 import React from 'react';
-import { useTB303Store, TB303_PRESETS, applyTB303Preset, getTB303Parameter, isTB303Enabled, isTB303Muted, isTB303Solo } from '../stores/tb303Store';
-import type { TB303Waveform } from '../stores/tb303Store';
+import {
+  useTB303Store,
+  TB303_PRESETS,
+  applyTB303Preset,
+  getTB303Parameter,
+  isTB303Enabled,
+  isTB303Muted,
+  isTB303Solo,
+  getTB303CutoffEnv
+} from '../stores/tb303Store';
+import type { TB303Waveform, TB303Envelope } from '../stores/tb303Store';
 
 export const TB303: React.FC = () => {
   const store = useTB303Store();
@@ -20,7 +29,7 @@ export const TB303: React.FC = () => {
     store.setVolume(parseFloat(e.target.value));
   };
 
-  const handleParameterChange = (param: keyof typeof state.parameters, value: number) => {
+  const handleParameterChange = (param: keyof typeof state.parameters, value: number | boolean) => {
     store.setParameter(param, value);
   };
 
@@ -28,8 +37,21 @@ export const TB303: React.FC = () => {
     store.setWaveform(waveform);
   };
 
+  const handleCutoffEnvChange = (param: keyof TB303Envelope, value: number) => {
+    const currentEnv = getTB303CutoffEnv(state);
+    store.setCutoffEnv({ ...currentEnv, [param]: value });
+  };
+
   const handlePresetSelect = (preset: keyof typeof TB303_PRESETS) => {
     applyTB303Preset(store, preset);
+  };
+
+  const handleSlideToggle = () => {
+    store.setParameter('slide', !state.parameters.slide);
+  };
+
+  const handlePortamentoToggle = () => {
+    store.setParameter('portamento', !state.parameters.portamento);
   };
 
   return (
@@ -59,8 +81,7 @@ export const TB303: React.FC = () => {
           value={state.volume}
           onChange={handleVolumeChange}
         />
-        <span>{Math.rou
-nd(state.volume * 100)}%</span>
+        <span>{Math.round(state.volume * 100)}%</span>
       </div>
 
       <div className="waveform-selector">
@@ -76,71 +97,195 @@ nd(state.volume * 100)}%</span>
         </select>
       </div>
 
-      <div className="parameter-controls">
-        <div className="parameter">
-          <label>Cutoff</label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={state.parameters.cutoff}
-            onChange={(e) => handleParameterChange('cutoff', parseFloat(e.target.value))}
-          />
-          <span>{Math.round(state.parameters.cutoff * 100)}%</span>
+      {/* Slide & Portamento Controls */}
+      <div className="slide-controls">
+        <div className="slide-toggle">
+          <label>
+            <input
+              type="checkbox"
+              checked={state.parameters.slide}
+              onChange={handleSlideToggle}
+            />
+            Slide
+          </label>
+          {state.parameters.slide && (
+            <div className="slide-time">
+              <label>Slide Time</label>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={state.parameters.slideTime}
+                onChange={(e) => handleParameterChange('slideTime', parseFloat(e.target.value))}
+              />
+              <span>{Math.round(state.parameters.slideTime * 100)}%</span>
+            </div>
+          )}
         </div>
-
-        <div className="parameter">
-          <label>Resonance</label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={state.parameters.resonance}
-            onChange={(e) => handleParameterChange('resonance', parseFloat(e.target.value))}
-          />
-          <span>{Math.round(state.parameters.resonance * 100)}%</span>
+        <div className="portamento-toggle">
+          <label>
+            <input
+              type="checkbox"
+              checked={state.parameters.portamento}
+              onChange={handlePortamentoToggle}
+            />
+            Portamento
+          </label>
         </div>
+      </div>
 
-        <div className="parameter">
-          <label>Env Mod</label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={state.parameters.envMod}
-            onChange={(e) => handleParameterChange('envMod', parseFloat(e.target.value))}
-          />
-          <span>{Math.round(state.parameters.envMod * 100)}%</span>
+      {/* Basic Parameters */}
+      <div className="parameter-section">
+        <h4>Basic Parameters</h4>
+        <div className="parameter-controls">
+          <div className="parameter">
+            <label>Cutoff</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.cutoff}
+              onChange={(e) => handleParameterChange('cutoff', parseFloat(e.target.value))}
+            />
+            <span>{Math.round(state.parameters.cutoff * 100)}%</span>
+          </div>
+
+          <div className="parameter">
+            <label>Resonance</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.resonance}
+              onChange={(e) => handleParameterChange('resonance', parseFloat(e.target.value))}
+            />
+            <span>{Math.round(state.parameters.resonance * 100)}%</span>
+          </div>
+
+          <div className="parameter">
+            <label>Env Mod</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.envMod}
+              onChange={(e) => handleParameterChange('envMod', parseFloat(e.target.value))}
+            />
+            <span>{Math.round(state.parameters.envMod * 100)}%</span>
+          </div>
+
+          <div className="parameter">
+            <label>Decay</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.decay}
+              onChange={(e) => handleParameterChange('decay', parseFloat(e.target.value))}
+            />
+            <span>{Math.round(state.parameters.decay * 100)}%</span>
+          </div>
+
+          <div className="parameter">
+            <label>Accent</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.accent}
+              onChange={(e) => handleParameterChange('accent', parseFloat(e.target.value))}
+            />
+            <span>{Math.round(state.parameters.accent * 100)}%</span>
+          </div>
         </div>
+      </div>
 
-        <div className="parameter">
-          <label>Decay</label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={state.parameters.decay}
-       
-     onChange={(e) => handleParameterChange('decay', parseFloat(e.target.value))}
-          />
-          <span>{Math.round(state.parameters.decay * 100)}%</span>
+      {/* Advanced Parameters */}
+      <div className="parameter-section advanced">
+        <h4>Advanced Parameters</h4>
+        <div className="parameter-controls">
+          <div className="parameter">
+            <label>Accent Amount</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.accentAmount}
+              onChange={(e) => handleParameterChange('accentAmount', parseFloat(e.target.value))}
+            />
+            <span>{Math.round(state.parameters.accentAmount * 100)}%</span>
+          </div>
+
+          <div className="parameter">
+            <label>Accent Velocity</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.accentVelocity}
+              onChange={(e) => handleParameterChange('accentVelocity', parseFloat(e.target.value))}
+            />
+            <span>{Math.round(state.parameters.accentVelocity * 100)}%</span>
+          </div>
         </div>
+      </div>
 
-        <div className="parameter">
-          <label>Accent</label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={state.parameters.accent}
-            onChange={(e) => handleParameterChange('accent', parseFloat(e.target.value))}
-          />
-          <span>{Math.round(state.parameters.accent * 100)}%</span>
+      {/* Cutoff Envelope */}
+      <div className="parameter-section">
+        <h4>Cutoff Envelope (ADSR)</h4>
+        <div className="envelope-controls">
+          <div className="env-param">
+            <label>A</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.cutoffEnv.attack}
+              onChange={(e) => handleCutoffEnvChange('attack', parseFloat(e.target.value))}
+            />
+          </div>
+          <div className="env-param">
+            <label>D</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.cutoffEnv.decay}
+              onChange={(e) => handleCutoffEnvChange('decay', parseFloat(e.target.value))}
+            />
+          </div>
+          <div className="env-param">
+            <label>S</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.cutoffEnv.sustain}
+              onChange={(e) => handleCutoffEnvChange('sustain', parseFloat(e.target.value))}
+            />
+          </div>
+          <div className="env-param">
+            <label>R</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={state.parameters.cutoffEnv.release}
+              onChange={(e) => handleCutoffEnvChange('release', parseFloat(e.target.value))}
+            />
+          </div>
         </div>
       </div>
 
