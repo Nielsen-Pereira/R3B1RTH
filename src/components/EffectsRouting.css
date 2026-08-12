@@ -1,0 +1,268 @@
+.effects-routing {
+  background: #2a2a2a;
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 8px;
+  min-width: 300px;
+}
+
+.routing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #1a1a1a;
+  border-radius: 4px 4px 0 0;
+}
+
+.instrument-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #ff6b6b;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.reset-button {
+  background: #666;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-button:hover {
+  background: #888;
+}
+
+.routing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 12px;
+  background: #252525;
+}
+
+.routing-chain {
+  background: #1a1a1a;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.chain-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #444;
+}
+
+.chain-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #ff6b6b;
+  text-transform: uppercase;
+}
+
+.chain-info {
+  font-size: 10px;
+  color: #888;
+}
+
+.effects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 60px;
+}
+
+.effect-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #333;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.effect-item.in-chain {
+  background: #444;
+}
+
+.effect-name {
+  flex: 1;
+  color: #ddd;
+}
+
+.effect-position {
+  color: #888;
+  font-size: 10px;
+  min-width: 20px;
+}
+
+.move-button,
+.remove-button {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 4px;
+  transition: all 0.2s;
+}
+
+.move-button:hover {
+  color: #ff6b6b;
+}
+
+.remove-button:hover {
+  color: #ff4444;
+}
+
+.add-section {
+  margin-top: 8px;
+}
+
+.effect-select {
+  width: 100%;
+  background: #333;
+  color: #ddd;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.effect-select:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.empty-state {
+  color: #666;
+  font-size: 11px;
+  font-style: italic;
+  text-align: center;
+  padding: 12px;
+}
+
+.available-effects {
+  padding: 12px;
+  background: #252525;
+  border-top: 1px solid #444;
+}
+
+.available-effects h4 {
+  font-size: 11px;
+  color: #ccc;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+}
+
+.effects-palette {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.effect-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #333;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.effect-palette-item:hover {
+  background: #444;
+}
+
+.effect-palette-item.used {
+  background: #555;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.effect-palette-item .effect-name {
+  color: #ddd;
+}
+
+.status-badge {
+  font-size: 9px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.status-badge.insert {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.status-badge.send {
+  background: #2196F3;
+  color: #fff;
+}
+
+.routing-info {
+  padding: 12px;
+  background: #1a1a1a;
+  border-radius: 0 0 4px 4px;
+  border-top: 1px solid #444;
+}
+
+.info-box {
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.master-effects-routing {
+  background: #2a2a2a;
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 8px;
+}
+
+.instrument-tabs {
+  display: flex;
+  background: #1a1a1a;
+  border-radius: 4px 4px 0 0;
+  padding: 4px;
+}
+
+.instrument-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #888;
+  padding: 8px 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 0;
+}
+
+.instrument-tab:hover {
+  color: #ccc;
+}
+
+.instrument-tab.active {
+  background: #444;
+  color: #ff6b6b;
+  border-bottom: 2px solid #ff6b6b;
+}
