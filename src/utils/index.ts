@@ -1,7 +1,5 @@
 /**
- * Utils Index - Batch 1 Development
- * Centralized exports for all utilities
+ * Utils exports
  */
 
-export * from './patternUtils';
-export * from './audioEngine';
+export * from './fileManager';
