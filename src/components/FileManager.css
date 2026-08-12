@@ -1,0 +1,313 @@
+/* FileManager Component Styles */
+
+.file-manager-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.file-manager-modal {
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.file-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.file-manager-header h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.file-manager-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px 0;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button:hover {
+  color: #ccc;
+}
+
+.tab-button.active {
+  color: #4fc3f7;
+  border-bottom-color: #4fc3f7;
+  background: rgba(79, 195, 247, 0.1);
+}
+
+.file-manager-content {
+  padding: 20px;
+  max-height: calc(80vh - 120px);
+  overflow-y: auto;
+}
+
+/* Save Tab */
+.save-tab .form-group {
+  margin-bottom: 16px;
+}
+
+.save-tab label {
+  display: block;
+  color: #aaa;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.save-tab input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.save-tab input:focus {
+  outline: none;
+  border-color: #4fc3f7;
+  box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.2);
+}
+
+.save-tab input::placeholder {
+  color: #666;
+}
+
+/* Load Tab */
+.load-tab {
+  text-align: center;
+}
+
+.drop-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 40px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.drop-zone:hover,
+.drop-zone.dragging {
+  border-color: #4fc3f7;
+  background: rgba(79, 195, 247, 0.05);
+}
+
+.drop-zone p {
+  color: #888;
+  margin: 8px 0;
+}
+
+.drop-zone p:first-child {
+  color: #ccc;
+  font-size: 1.1rem;
+}
+
+.browse-button {
+  background: linear-gradient(145deg, #4fc3f7, #29b6f6);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 12px;
+}
+
+.browse-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+}
+
+/* New Tab */
+.new-tab {
+  text-align: center;
+}
+
+.warning-message {
+  color: #ff9800;
+  margin-bottom: 24px;
+  padding: 12px;
+  background: rgba(255, 152, 0, 0.1);
+  border-radius: 6px;
+}
+
+.warning-message p {
+  margin: 4px 0;
+}
+
+/* Actions */
+.file-manager-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+button.primary {
+  background: linear-gradient(145deg, #4fc3f7, #29b6f6);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button.primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+}
+
+button.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-button {
+  min-width: 120px;
+}
+
+.create-button {
+  min-width: 140px;
+}
+
+.cancel-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 24px;
+  border-radius: 6px;
+  color: #ccc;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Status Messages */
+.status-message {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 4px;
+  color: #8bc34a;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.error-message {
+  position: relative;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 6px;
+  color: #f44336;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: none;
+  border: none;
+  color: #ff8a65;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.unsaved-warning {
+  margin-top: 16px;
+  padding: 8px 12px;
+  background: rgba(255, 193, 7, 0.1);
+  border-radius: 4px;
+  color: #ffc107;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* Scrollbar */
+.file-manager-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.file-manager-modal::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.file-manager-modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.file-manager-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
