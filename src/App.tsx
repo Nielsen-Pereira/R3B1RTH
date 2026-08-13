@@ -22,16 +22,11 @@ const App: React.FC = () => {
   const patternStore = usePatternStore();
 
   const handleNewProject = () => {
-    // Reset all stores to initial state
     songStore.reset();
     patternStore.reset();
-    // Note: Other stores (automation, effects) should also be reset
-    // This will be handled by the FileManager component
   };
 
   const handleProjectLoaded = (project: unknown) => {
-    // Load project data into stores
-    // This will be implemented in the FileManager component
     console.log('Project loaded:', project);
   };
 
@@ -43,28 +38,19 @@ const App: React.FC = () => {
       </header>
 
       <main className="app-main">
-        {/* Transport Controls */}
         <div className="section transport-section">
           <TransportControls />
         </div>
-
-        {/* Main Sequencer */}
         <div className="section sequencer-section">
           <MainSequencer />
         </div>
-
-        {/* Pattern Management */}
         <div className="section pattern-section">
           <PatternManager />
           <PatternEditor />
         </div>
-
-        {/* Song Mode */}
         <div className="section song-section">
           <SongMode />
         </div>
-
-        {/* Instruments */}
         <div className="instruments-section">
           <div className="instrument tb303">
             <h2>TB-303</h2>
@@ -82,28 +68,22 @@ const App: React.FC = () => {
             <EffectsRouting instrument="tr909" />
           </div>
         </div>
-
-        {/* Master Effects */}
         <div className="section master-section">
           <h2>Master Effects</h2>
           <MasterEffectsRouting />
           <AudioEffectsControls />
         </div>
-
-        {/* Advanced Features */}
         <div className="section advanced-section">
           <AutomationControls />
           <AdvancedSequencerControls />
         </div>
       </main>
 
-      {/* File Manager Modal */}
       <FileManager
         onProjectLoaded={handleProjectLoaded}
         onNewProject={handleNewProject}
       />
 
-      {/* File Manager Button */}
       <button
         className="file-manager-button"
         onClick={() => setShowFileManager(true)}
