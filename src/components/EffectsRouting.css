@@ -1,0 +1,73 @@
+/* Effects Routing Component Styles */
+
+.effects-routing {
+  background: #2a2a2a;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 8px;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.effects-routing h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.routing-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.routing-row {
+  display: contents;
+}
+
+.routing-label {
+  font-size: 11px;
+  color: #888;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.routing-select {
+  background: #333;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.routing-select:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.routing-option {
+  background: #2a2a2a;
+  color: #ccc;
+}
+
+.routing-option:hover {
+  background: #333;
+}
+
+.routing-option:checked {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.effects-info {
+  font-size: 10px;
+  color: #666;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #444;
+}
