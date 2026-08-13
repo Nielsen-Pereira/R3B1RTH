@@ -1,7 +1,10 @@
-// Export all types
-export * from './audioTypes';
-export * from './patternTypes';
-export * from './sequencerTypes';
+/**
+ * Types exports
+ */
+
 export * from './songTypes';
+export * from './patternTypes';
+export * from './automationTypes';
 export * from './effectTypes';
-export * from './instrumentTypes';
+export * from './sequencerTypes';
+export * from './audio';
