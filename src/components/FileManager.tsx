@@ -17,6 +17,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
     saveProject,
     loadProject,
     exportProject,
+    exportProjectAsAudio,
     importProject,
     getRecentProjects,
     clearRecentProjects,
@@ -25,6 +26,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
   const [recentProjects, setRecentProjects] = useState<Project[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [exportFormat, setExportFormat] = useState<'wav' | 'aiff'>('wav');
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
@@ -80,6 +82,18 @@ export const FileManager: React.FC<FileManagerProps> = ({
     }
   }, [exportProject]);
 
+  const handleExportAsAudio = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await exportProjectAsAudio(undefined, exportFormat);
+    } catch (err) {
+      setError('Failed to export project as audio');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [exportProjectAsAudio, exportFormat]);
+
   const handleImport = useCallback(async (file: File) => {
     setIsLoading(true);
     setError(null);
@@ -131,8 +145,27 @@ export const FileManager: React.FC<FileManagerProps> = ({
               onClick={handleExport}
               disabled={isLoading}
             >
-              Export Project
+              Export Project (JSON)
             </button>
+
+            <div className="audio-export-group">
+              <select
+                value={exportFormat}
+                onChange={(e) => setExportFormat(e.target.value as 'wav' | 'aiff')}
+                disabled={isLoading}
+                className="format-select"
+              >
+                <option value="wav">WAV</option>
+                <option value="aiff">AIFF</option>
+              </select>
+              <button
+                className="file-action-button export-audio"
+                onClick={handleExportAsAudio}
+                disabled={isLoading}
+              >
+                Export as Audio
+              </button>
+            </div>
 
             <label className="file-action-button import">
               Import Project
