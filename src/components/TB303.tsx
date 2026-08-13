@@ -1,8 +1,8 @@
 /**
- * TB-303 Component - Enhanced for Batch 4
- * R3B-95, R3B-96, R3B-135: TR-808/TR-909 + TB-303 Advanced Parameters
+ * TB-303 Component - R3B-87: TB-303 Advanced Features
  *
  * UI component for TB-303 Bass Line synthesizer with advanced parameters
+ * Constraints: TB-303 supports only Sawtooth and Square waveforms (per ReBirth RB-338 specs)
  */
 
 import React from 'react';
@@ -92,12 +92,9 @@ export const TB303: React.FC = () => {
         >
           <option value="sawtooth">Sawtooth</option>
           <option value="square">Square</option>
-          <option value="pulse">Pulse</option>
-          <option value="triangle">Triangle</option>
         </select>
       </div>
 
-      {/* Slide & Portamento Controls */}
       <div className="slide-controls">
         <div className="slide-toggle">
           <label>
@@ -135,7 +132,6 @@ export const TB303: React.FC = () => {
         </div>
       </div>
 
-      {/* Basic Parameters */}
       <div className="parameter-section">
         <h4>Basic Parameters</h4>
         <div className="parameter-controls">
@@ -206,7 +202,6 @@ export const TB303: React.FC = () => {
         </div>
       </div>
 
-      {/* Advanced Parameters */}
       <div className="parameter-section advanced">
         <h4>Advanced Parameters</h4>
         <div className="parameter-controls">
@@ -238,7 +233,6 @@ export const TB303: React.FC = () => {
         </div>
       </div>
 
-      {/* Cutoff Envelope */}
       <div className="parameter-section">
         <h4>Cutoff Envelope (ADSR)</h4>
         <div className="envelope-controls">
