@@ -9,3 +9,5 @@ export { default as useAudioEffectsStore } from './useAudioEffectsStore';
 export { default as useAdvancedSequencer } from './useAdvancedSequencer';
 export { default as useAutomation } from './useAutomation';
 export { default as useFileManager } from './useFileManager';
+export { default as useAudio } from './useAudio';
+export { default as useSequencer } from './useSequencer';
