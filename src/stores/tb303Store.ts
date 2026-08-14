@@ -1,15 +1,15 @@
 /**
- * TB-303 Instrument Store - Enhanced for Batch 4
- * R3B-95, R3B-96, R3B-135: TR-808/TR-909 + TB-303 Advanced Parameters
+ * TB-303 Instrument Store - R3B-87: TB-303 Advanced Features
  *
  * Zustand store for TB-303 Bass Line synthesizer with advanced parameters
+ * Constraints: TB-303 supports only Sawtooth and Square waveforms (per ReBirth RB-338 specs)
  */
 
 import { create } from 'zustand';
 import type { InstrumentType } from '../types';
 
 // Types
-export type TB303Waveform = 'sawtooth' | 'square' | 'pulse' | 'triangle';
+export type TB303Waveform = 'sawtooth' | 'square';
 
 export type TB303Envelope = {
   attack: number;  // 0-1
@@ -19,7 +19,7 @@ export type TB303Envelope = {
 };
 
 export type TB303Parameters = {
-  // Basic parameters (Batch 2)
+  // Basic parameters
   cutoff: number;
   resonance: number;
   envMod: number;
@@ -30,12 +30,12 @@ export type TB303Parameters = {
   tune: number;
   slide: boolean;
   
-  // Advanced parameters (Batch 4 - R3B-135)
-  accentAmount: number;      // 0-1: Amount of accent modulation
-  slideTime: number;         // 0-1: Slide time between notes
-  cutoffEnv: TB303Envelope;  // Cutoff envelope ADSR
-  accentVelocity: number;    // 0-1: Velocity sensitivity for accent
-  portamento: boolean;       // Portamento mode (legacy slide behavior)
+  // Advanced parameters (R3B-87)
+  accentAmount: number;
+  slideTime: number;
+  cutoffEnv: TB303Envelope;
+  accentVelocity: number;
+  portamento: boolean;
 };
 
 export type TB303Voice = {
@@ -58,7 +58,6 @@ export type TB303State = {
   parameters: TB303Parameters;
   voices: TB303Voice[];
   
-  // Actions
   setEnabled: (enabled: boolean) => void;
   setVolume: (volume: number) => void;
   setMute: (mute: boolean) => void;
@@ -72,7 +71,6 @@ export type TB303State = {
   reset: () => void;
 };
 
-// Default envelope
 const defaultEnvelope: TB303Envelope = {
   attack: 0.1,
   decay: 0.5,
@@ -80,9 +78,7 @@ const defaultEnvelope: TB303Envelope = {
   release: 0.3,
 };
 
-// Default parameters
 const defaultParameters: TB303Parameters = {
-  // Basic
   cutoff: 0.5,
   resonance: 0.5,
   envMod: 0.5,
@@ -92,8 +88,6 @@ const defaultParameters: TB303Parameters = {
   waveform: 'sawtooth',
   tune: 0,
   slide: false,
-  
-  // Advanced
   accentAmount: 0.5,
   slideTime: 0.3,
   cutoffEnv: { ...defaultEnvelope },
@@ -101,7 +95,6 @@ const defaultParameters: TB303Parameters = {
   portamento: false,
 };
 
-// Store
 export const useTB303Store = create<TB303State>((set) => ({
   id: 'tb303',
   name: 'TB-303',
@@ -121,11 +114,8 @@ export const useTB303Store = create<TB303State>((set) => ({
   })),
 
   setEnabled: (enabled) => set({ enabled }),
-
   setVolume: (volume) => set({ volume: Math.max(0, Math.min(1, volume)) }),
-
   setMute: (mute) => set({ mute }),
-
   setSolo: (solo) => set({ solo }),
 
   setParameter: (param, value) => set((state) => ({
@@ -158,14 +148,12 @@ export const useTB303Store = create<TB303State>((set) => ({
   noteOn: (note, velocity, accent, slide) => set((state) => {
     const voice = state.voices.find(v => !v.playing);
     if (!voice) return state;
-    
     voice.note = note;
     voice.playing = true;
     voice.sliding = slide;
     voice.accented = accent;
     voice.slideStartNote = slide ? voice.note : null;
     voice.slideProgress = 0;
-    
     return { voices: [...state.voices] };
   }),
 
@@ -205,7 +193,6 @@ export const useTB303Store = create<TB303State>((set) => ({
   }),
 }));
 
-// Selectors
 export const getTB303State = (state: TB303State) => state;
 export const isTB303Enabled = (state: TB303State) => state.enabled;
 export const isTB303Muted = (state: TB303State) => state.mute;
@@ -214,7 +201,6 @@ export const getTB303Volume = (state: TB303State) => state.volume;
 export const getTB303Parameter = (state: TB303State, param: keyof TB303Parameters) => state.parameters[param];
 export const getTB303CutoffEnv = (state: TB303State) => state.parameters.cutoffEnv;
 
-// Presets
 export const TB303_PRESETS = {
   'Default': defaultParameters,
   'Acid': { 
@@ -233,14 +219,6 @@ export const TB303_PRESETS = {
     resonance: 0.2, 
     decay: 0.8,
     cutoffEnv: { attack: 0.2, decay: 0.7, sustain: 0.6, release: 0.5 }
-  },
-  'Bright': { 
-    ...defaultParameters, 
-    waveform: 'pulse', 
-    cutoff: 0.9, 
-    resonance: 0.6, 
-    decay: 0.4,
-    accentAmount: 0.7
   },
   'Punchy': { 
     ...defaultParameters, 
