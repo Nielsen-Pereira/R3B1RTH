@@ -1,0 +1,298 @@
+.mods-manager-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.mods-manager {
+  background: #1a1a2e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.mods-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+  background: #0f3460;
+}
+
+.mods-manager-header h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 18px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.close-button:hover {
+  color: #fff;
+}
+
+.mods-manager-content {
+  padding: 20px;
+}
+
+.mods-error {
+  color: #e94560;
+  padding: 10px;
+  background: rgba(233, 69, 96, 0.1);
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.mods-info {
+  color: #aaa;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.current-mod,
+.available-mods {
+  margin-bottom: 20px;
+}
+
+.current-mod h3,
+.available-mods h3 {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+
+.mod-card {
+  background: #16213e;
+  border: 1px solid #2a2a4a;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mod-card:hover {
+  border-color: #e94560;
+  background: #1a1a2e;
+}
+
+.mod-card.active {
+  border-color: #e94560;
+  background: #0f3460;
+  box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
+}
+
+.mod-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.mod-name {
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.mod-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.mod-badge.standard {
+  background: #0066ff;
+  color: #fff;
+}
+
+.mod-description {
+  color: #aaa;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.mod-meta {
+  color: #888;
+  font-size: 11px;
+}
+
+.mods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mod-delete {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 2px 5px;
+  font-size: 16px;
+}
+
+.mod-delete:hover {
+  color: #e94560;
+}
+
+.mod-delete:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.delete-confirmation {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(233, 69, 96, 0.1);
+  border-radius: 4px;
+  border: 1px dashed #e94560;
+}
+
+.delete-confirmation p {
+  margin: 0 0 8px 0;
+  color: #e94560;
+  font-size: 12px;
+}
+
+.confirmation-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.confirm-delete {
+  background: #e94560;
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.cancel-delete {
+  background: #333;
+  color: #ccc;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.mods-action-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.mods-action-button.new {
+  background: #0066ff;
+  color: #fff;
+}
+
+.mods-action-button.new:hover {
+  background: #0055cc;
+}
+
+.new-mod-form {
+  margin-top: 15px;
+  padding: 15px;
+  background: #0f3460;
+  border-radius: 6px;
+}
+
+.new-mod-form h3 {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  color: #ccc;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 6px;
+  background: #1a1a2e;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #e94560;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.create-button {
+  background: #0066ff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cancel-button {
+  background: #333;
+  color: #ccc;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.mods-loading {
+  color: #888;
+  font-size: 12px;
+  text-align: center;
+  padding: 10px;
+}
