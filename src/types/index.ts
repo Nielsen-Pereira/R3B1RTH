@@ -1,5 +1,6 @@
 export * from './audio';
 export * from './automationTypes';
+export * from './fileTypes';
 export * from './mixer';
 export * from './mods';
 export * from './sequencer';
