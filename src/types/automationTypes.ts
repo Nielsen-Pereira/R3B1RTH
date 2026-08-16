@@ -1,76 +1,46 @@
 /**
- * Automation Types for R3B1RTH
- * Based on ReBirth RB-338 specifications
+ * Automation Types - R3B-5
+ * Type definitions for automation system
  */
 
-export type ControlId = 
-  | 'tb303_cutoff'
-  | 'tb303_resonance'
-  | 'tb303_envMod'
-  | 'tb303_decay'
-  | 'tb303_accent'
-  | 'tb303_volume'
-  | 'tb303_tune'
-  | 'tr808_volume'
-  | 'tr808_tune'
-  | 'tr808_attack'
-  | 'tr808_decay'
-  | 'tr909_volume'
-  | 'tr909_tune'
-  | 'tr909_attack'
-  | 'tr909_decay'
-  | 'master_volume'
-  | 'tempo';
-
 export interface AutomationPoint {
-  timestamp: number; // milliseconds from start
-  value: number; // normalized 0-1
+  id: string;
+  time: number;
+  value: number;
+  curve: AutomationCurve;
 }
 
-export interface AutomationTrack {
-  controlId: ControlId;
+export type AutomationCurve = 'linear' | 'step' | 'smooth' | 'exponential';
+
+export interface AutomationLane {
+  id: string;
+  parameter: string;
+  deviceId: string;
   points: AutomationPoint[];
   enabled: boolean;
-}
-
-export interface PatternAutomation {
-  patternId: string;
-  tracks: AutomationTrack[];
-}
-
-export interface SongAutomation {
-  songId: string;
-  globalTracks: AutomationTrack[]; // For master controls
-  patternAutomation: PatternAutomation[];
+  recording: boolean;
 }
 
 export interface AutomationState {
-  automation: SongAutomation[];
-  isRecordingAutomation: boolean;
-  recordingStartTime: number | null;
-  currentAutomationTime: number;
+  lanes: AutomationLane[];
+  isRecording: boolean;
+  currentRecordingLane: string | null;
+  playbackPosition: number;
 }
 
-export const DEFAULT_AUTOMATION_TRACK: AutomationTrack = {
-  controlId: 'tempo',
-  points: [],
-  enabled: true,
-};
+export interface AutomationRecording {
+  startTime: number;
+  endTime: number;
+  parameter: string;
+  deviceId: string;
+  points: AutomationPoint[];
+}
 
-export const DEFAULT_PATTERN_AUTOMATION: PatternAutomation = {
-  patternId: '',
-  tracks: [],
-};
+export const DEFAULT_AUTOMATION_CURVE: AutomationCurve = 'linear';
 
-export const DEFAULT_SONG_AUTOMATION: SongAutomation = {
-  songId: '',
-  globalTracks: [],
-  patternAutomation: [],
-};
-
-export const DEFAULT_AUTOMATION_STATE: AutomationState = {
-  automation: [],
-  isRecordingAutomation: false,
-  recordingStartTime: null,
-  currentAutomationTime: 0,
-};
+export const AUTOMATION_PARAMETERS = {
+  tb303: ['cutoff', 'resonance', 'envMod', 'decay', 'sustain', 'waveform'],
+  tr808: ['tune', 'decay', 'tone', 'level'],
+  tr909: ['tune', 'decay', 'tone', 'level'],
+  master: ['volume', 'pan']
+} as const;
