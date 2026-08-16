@@ -1,52 +1,273 @@
+/**
+ * AutomationControls Styles - R3B-5
+ */
+
 .automation-controls {
-  background: #2a2a2a;
-  border-radius: 4px;
-  color: #fff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 8px;
-  min-width: 200px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 8px;
 }
 
 .automation-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  cursor: pointer;
-  user-select: none;
-  background: #1a1a1a;
-  border-radius: 4px 4px 0 0;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #333;
 }
 
-.automation-header:hover {
-  background: #333;
-}
-
-.automation-title {
-  font-size: 12px;
-  font-weight: bold;
+.automation-header h3 {
+  margin: 0;
   color: #ccc;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 0.9rem;
 }
 
-.record-button {
-  background: #666;
+.add-lane-button {
+  background: #444;
   color: #fff;
   border: none;
   border-radius: 4px;
   padding: 4px 8px;
-  font-size: 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 0.8rem;
+}
+
+.add-lane-button:hover {
+  background: #555;
+}
+
+.lane-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 8px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.parameter-select {
+  background: #333;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 0.8rem;
+}
+
+.confirm-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.confirm-button:hover {
+  background: #5CBF50;
+}
+
+.confirm-button:disabled {
+  background: #444;
+  cursor: not-allowed;
+}
+
+.automation-lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.automation-lane {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.automation-lane.enabled {
+  border-color: #4CAF50;
+}
+
+.automation-lane.disabled {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.lane-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.lane-parameter {
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.lane-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.record-button {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
 }
 
 .record-button:hover {
-  background: #888;
+  background: #ff8787;
 }
 
-.record-button.recording {
-  background: #ff4444;
+.toggle-button {
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.toggle-button:hover {
+  background: #555;
+}
+
+.remove-button {
+  background: #333;
+  color: #aaa;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.remove-button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.lane-points {
+  margin-top: 8px;
+}
+
+.no-lanes, .no-points {
+  color: #666;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 8px;
+}
+
+.points-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.automation-point {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 2px 4px;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.automation-point:hover {
+  background: #444;
+  border-color: #777;
+}
+
+.point-time, .point-value, .point-curve {
+  margin-right: 4px;
+  color: #aaa;
+}
+
+.point-curve {
+  color: #888;
+}
+
+.point-editor {
+  margin-top: 8px;
+  padding: 8px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+.editor-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.editor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.editor-field label {
+  color: #888;
+  font-size: 0.7rem;
+}
+
+.editor-field input,
+.editor-field select {
+  background: #333;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 3px;
+  padding: 2px;
+  font-size: 0.75rem;
+  width: 80px;
+}
+
+.editor-buttons {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.editor-buttons button {
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.editor-buttons button:hover {
+  background: #555;
+}
+
+.recording-indicator {
+  margin-top: 8px;
+  padding: 6px;
+  background: #ff6b6b;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-align: center;
   animation: pulse 1s infinite;
 }
 
@@ -54,101 +275,4 @@
   0% { opacity: 1; }
   50% { opacity: 0.7; }
   100% { opacity: 1; }
-}
-
-.automation-panel {
-  padding: 12px;
-  background: #252525;
-  border-radius: 0 0 4px 4px;
-}
-
-.controls-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.control-item {
-  padding: 8px;
-  background: #333;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.control-item:hover {
-  background: #444;
-}
-
-.control-item.selected {
-  background: #555;
-  border-left: 3px solid #ff6b6b;
-}
-
-.control-name {
-  font-size: 11px;
-  color: #ddd;
-}
-
-.control-details {
-  margin-top: 8px;
-  padding: 8px;
-  background: #2a2a2a;
-  border-radius: 4px;
-}
-
-.automation-visualizer {
-  margin: 8px 0;
-}
-
-.automation-canvas {
-  background: #1a1a1a;
-  border-radius: 4px;
-  border: 1px solid #444;
-}
-
-.control-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.clear-button {
-  background: #666;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.clear-button:hover {
-  background: #888;
-}
-
-.global-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #444;
-}
-
-.clear-all-button {
-  background: #884444;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.clear-all-button:hover {
-  background: #aa5555;
 }
