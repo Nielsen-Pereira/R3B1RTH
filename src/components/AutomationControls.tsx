@@ -1,166 +1,201 @@
-import React, { useState } from 'react';
+/**
+ * Automation Controls - R3B-5
+ * UI component for automation recording and editing
+ */
+
+import React, { useState, useCallback } from 'react';
 import { useAutomation } from '../hooks/useAutomation';
-import { ControlId } from '../types/automationTypes';
-import './AutomationControls.css';
+import type { AutomationLane, AutomationPoint, AutomationCurve } from '../types/automationTypes';
 
 interface AutomationControlsProps {
-  songId: string;
-  controls: ControlId[];
+  deviceId: string;
+  deviceType: 'tb303' | 'tr808' | 'tr909';
+  className?: string;
 }
 
-const AutomationControls: React.FC<AutomationControlsProps> = ({ songId, controls }) => {
-  const [selectedControl, setSelectedControl] = useState<ControlId | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
-  
-  const automation = useAutomation({
-    controls,
-    songId,
-    sampleRate: 30,
-  });
+export const AutomationControls: React.FC<AutomationControlsProps> = ({
+  deviceId,
+  deviceType,
+  className = '',
+}) => {
+  const {
+    lanes,
+    isRecording,
+    currentRecordingLane,
+    addLane,
+    removeLane,
+    toggleLane,
+    addPoint,
+    removePoint,
+    startRecording,
+    stopRecording,
+    getLaneByParameter,
+    getAvailableParameters,
+    getLaneForDevice,
+  } = useAutomation();
 
-  const handleRecordToggle = () => {
-    if (automation.isRecording) {
-      automation.stopRecording();
+  const [selectedParameter, setSelectedParameter] = useState<string>('');
+  const [showLaneMenu, setShowLaneMenu] = useState(false);
+  const [editingLaneId, setEditingLaneId] = useState<string | null>(null);
+  const [editingPointId, setEditingPointId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState<number>(0);
+  const [editTime, setEditTime] = useState<number>(0);
+  const [editCurve, setEditCurve] = useState<AutomationCurve>('linear');
+
+  const availableParameters = getAvailableParameters(deviceType);
+  const deviceLanes = getLaneForDevice(deviceId);
+
+  const handleAddLane = useCallback(() => {
+    if (!selectedParameter) return;
+    const existingLane = getLaneByParameter(selectedParameter, deviceId);
+    if (existingLane) {
+      toggleLane(existingLane.id);
     } else {
-      automation.startRecording();
+      addLane(selectedParameter, deviceId);
     }
-  };
+    setSelectedParameter('');
+    setShowLaneMenu(false);
+  }, [selectedParameter, deviceId, getLaneByParameter, addLane, toggleLane]);
 
-  const handleClear = (controlId?: ControlId) => {
-    automation.clearAutomation(controlId);
-  };
+  const handleStartRecording = useCallback((laneId: string) => {
+    startRecording(laneId);
+  }, [startRecording]);
 
-  const handleControlSelect = (controlId: ControlId) => {
-    setSelectedControl(prev => prev === controlId ? null : controlId);
-  };
+  const handleStopRecording = useCallback(() => {
+    stopRecording();
+  }, [stopRecording]);
 
-  const handleValueChange = (controlId: ControlId, value: number) => {
-    automation.setControlValue(controlId, value);
-  };
+  const handleRemoveLane = useCallback((laneId: string) => {
+    removeLane(laneId);
+  }, [removeLane]);
+
+  const handleEditPoint = useCallback((laneId: string, point: AutomationPoint) => {
+    setEditingLaneId(laneId);
+    setEditingPointId(point.id);
+    setEditValue(point.value);
+    setEditTime(point.time);
+    setEditCurve(point.curve);
+  }, []);
+
+  const handleSavePoint = useCallback(() => {
+    if (editingLaneId && editingPointId) {
+      setEditingLaneId(null);
+      setEditingPointId(null);
+    }
+  }, [editingLaneId, editingPointId]);
+
+  const handleCancelEdit = useCallback(() => {
+    setEditingLaneId(null);
+    setEditingPointId(null);
+  }, []);
+
+  const handleAddPointManually = useCallback((laneId: string) => {
+    addPoint(laneId, editTime, editValue, editCurve);
+    setEditTime(0);
+    setEditValue(0);
+    setEditCurve('linear');
+  }, [editTime, editValue, editCurve, addPoint]);
+
+  const curves: AutomationCurve[] = ['linear', 'step', 'smooth', 'exponential'];
 
   return (
-    <div className="automation-controls">
-      <div className="automation-header" onClick={() => setIsExpanded(!isExpanded)}>
-        <span className="automation-title">Automation</span>
-        <button 
-          className={`record-button ${automation.isRecording ? 'recording' : ''}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleRecordToggle();
-          }}
-        >
-          {automation.isRecording ? 'Stop' : 'Record'}
+    <div className={"automation-controls " + className}>
+      <div className="automation-header">
+        <h3>Automation</h3>
+        <button className="add-lane-button" onClick={() => setShowLaneMenu(!showLaneMenu)}>
+          + Add Lane
         </button>
+        
+        {showLaneMenu && (
+          <div className="lane-menu">
+            <select value={selectedParameter} onChange={(e) => setSelectedParameter(e.target.value)} className="parameter-select">
+              <option value="">Select Parameter...</option>
+              {availableParameters.map((param) => (
+                <option key={param} value={param}>{param}</option>
+              ))}
+            </select>
+            <button className="confirm-button" onClick={handleAddLane} disabled={!selectedParameter}>
+              Add
+            </button>
+          </div>
+        )}
       </div>
 
-      {isExpanded && (
-        <div className="automation-panel">
-          <div className="controls-list">
-            {controls.map((controlId) => (
-              <div 
-                key={controlId}
-                className={`control-item ${selectedControl === controlId ? 'selected' : ''}`}
-                onClick={() => handleControlSelect(controlId)}
-              >
-                <span className="control-name">{formatControlName(controlId)}</span>
-                {selectedControl === controlId && (
-                  <div className="control-details">
-                    <div className="automation-visualizer">
-                      <AutomationVisualizer 
-                        points={automation.automationData[controlId] || []} 
-                        controlId={controlId}
-                      />
-                    </div>
-                    <div className="control-actions">
-                      <button 
-                        className="clear-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleClear(controlId);
-                        }}
-                      >
-                        Clear
-                      </button>
-                    </div>
+      <div className="automation-lanes">
+        {deviceLanes.length === 0 ? (
+          <div className="no-lanes">No automation lanes. Add a lane to start recording.</div>
+        ) : (
+          deviceLanes.map((lane) => (
+            <div key={lane.id} className={"automation-lane " + (lane.enabled ? 'enabled' : 'disabled')}>
+              <div className="lane-header">
+                <span className="lane-parameter">{lane.parameter}</span>
+                <div className="lane-actions">
+                  <button className="record-button" onClick={() => {
+                    if (isRecording && currentRecordingLane === lane.id) handleStopRecording();
+                    else handleStartRecording(lane.id);
+                  }}>
+                    {isRecording && currentRecordingLane === lane.id ? 'Stop' : 'Record'}
+                  </button>
+                  <button className="toggle-button" onClick={() => toggleLane(lane.id)}>
+                    {lane.enabled ? 'Disable' : 'Enable'}
+                  </button>
+                  <button className="remove-button" onClick={() => handleRemoveLane(lane.id)}>X</button>
+                </div>
+              </div>
+              
+              <div className="lane-points">
+                {lane.points.length === 0 ? (
+                  <div className="no-points">No points. Record or add manually.</div>
+                ) : (
+                  <div className="points-list">
+                    {lane.points.map((point) => (
+                      <div key={point.id} className="automation-point" onClick={() => handleEditPoint(lane.id, point)}>
+                        <span className="point-time">{point.time.toFixed(2)}</span>
+                        <span className="point-value">{point.value.toFixed(2)}</span>
+                        <span className="point-curve">{point.curve}</span>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
-            ))}
-          </div>
 
-          <div className="global-actions">
-            <button 
-              className="clear-all-button"
-              onClick={() => handleClear()}
-            >
-              Clear All
-            </button>
-          </div>
+              {editingLaneId === lane.id && (
+                <div className="point-editor">
+                  <div className="editor-controls">
+                    <div className="editor-field">
+                      <label>Time:</label>
+                      <input type="number" value={editTime} onChange={(e) => setEditTime(parseFloat(e.target.value) || 0)} step="0.01" />
+                    </div>
+                    <div className="editor-field">
+                      <label>Value:</label>
+                      <input type="number" value={editValue} onChange={(e) => setEditValue(parseFloat(e.target.value) || 0)} step="0.01" min="0" max="1" />
+                    </div>
+                    <div className="editor-field">
+                      <label>Curve:</label>
+                      <select value={editCurve} onChange={(e) => setEditCurve(e.target.value as AutomationCurve)}>
+                        {curves.map((curve) => (<option key={curve} value={curve}>{curve}</option>))}
+                      </select>
+                    </div>
+                    <div className="editor-buttons">
+                      <button onClick={handleSavePoint}>Save</button>
+                      <button onClick={handleCancelEdit}>Cancel</button>
+                      <button onClick={() => handleAddPointManually(lane.id)}>Add</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+
+      {isRecording && (
+        <div className="recording-indicator">
+          Recording automation for: {currentRecordingLane && lanes.find(l => l.id === currentRecordingLane)?.parameter}
         </div>
       )}
     </div>
   );
 };
-
-interface AutomationVisualizerProps {
-  points: { timestamp: number; value: number }[];
-  controlId: ControlId;
-}
-
-const AutomationVisualizer: React.FC<AutomationVisualizerProps> = ({ points }) => {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-
-  React.useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw automation curve
-    if (points.length > 0) {
-      ctx.beginPath();
-      ctx.strokeStyle = '#ff6b6b';
-      ctx.lineWidth = 2;
-
-      // Normalize points to canvas size
-      const maxTime = Math.max(...points.map(p => p.timestamp), 1);
-      const maxValue = Math.max(...points.map(p => p.value), 1);
-
-      points.forEach((point, index) => {
-        const x = (point.timestamp / maxTime) * canvas.width;
-        const y = canvas.height - (point.value / maxValue) * canvas.height;
-
-        if (index === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      });
-
-      ctx.stroke();
-    }
-  }, [points]);
-
-  return (
-    <canvas 
-      ref={canvasRef} 
-      width={200} 
-      height={60}
-      className="automation-canvas"
-    />
-  );
-};
-
-// Helper function to format control names
-function formatControlName(controlId: ControlId): string {
-  const parts = controlId.split('_');
-  return parts
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
 
 export default AutomationControls;
