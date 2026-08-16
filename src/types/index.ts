@@ -8,3 +8,4 @@ export * from './automationTypes';
 export * from './effectTypes';
 export * from './sequencerTypes';
 export * from './audio';
+export * from './mods';
