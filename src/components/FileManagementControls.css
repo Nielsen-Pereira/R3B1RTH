@@ -1,0 +1,100 @@
+/**
+ * FileManagementControls Styles - R3B-114, R3B-141
+ */
+
+.file-management-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  background: #2a2a2a;
+  border-radius: 6px;
+}
+
+.file-control-group {
+  position: relative;
+}
+
+.file-action-button {
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.file-action-button:hover:not(:disabled) {
+  background: #555;
+}
+
+.file-action-button:disabled {
+  background: #333;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.file-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 4px;
+  z-index: 100;
+  min-width: 140px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  color: #ccc;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.menu-item:hover:not(:disabled) {
+  background: #333;
+  color: #fff;
+}
+
+.menu-item:disabled {
+  color: #666;
+  cursor: not-allowed;
+}
+
+.format-select {
+  background: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.format-select:disabled {
+  background: #333;
+  cursor: not-allowed;
+}
+
+.file-error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  background: #2a1a1a;
+  border-radius: 4px;
+}
+
+.file-loading {
+  color: #aaa;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+}
